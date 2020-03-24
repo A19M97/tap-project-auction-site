@@ -39,6 +39,12 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="TAP2018-19_AuctionSite.AlarmClock.Interface">
+      <HintPath>..\..\TAP2018-19_AuctionSite.AlarmClock.Interface.dll</HintPath>
+    </Reference>
+    <Reference Include="TAP2018-19_AuctionSite.AuctionSite.Interface">
+      <HintPath>..\..\TAP2018-19_AuctionSite.AuctionSite.Interface.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
