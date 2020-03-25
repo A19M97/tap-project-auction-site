@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using TAP2018_19.AlarmClock.Interfaces;
 using TAP2018_19.AuctionSite.Interfaces;
 
-namespace AuctionSite
+namespace Mugnai
 {
     class SiteFactory : ISiteFactory
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using TAP2018_19.AuctionSite.Interfaces;
 
-namespace AuctionSite
+namespace Mugnai
 {
     public class Site : ISite
     {
