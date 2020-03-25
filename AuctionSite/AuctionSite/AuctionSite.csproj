@@ -118,6 +118,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Auction.cs" />
     <Compile Include="Session.cs" />
     <Compile Include="Site.cs" />
     <Compile Include="SiteFactory.cs" />
