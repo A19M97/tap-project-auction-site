@@ -7,18 +7,16 @@ namespace Mugnai
 {
     public class AuctionSiteContext : DbContext
     {
-        
-        public AuctionSiteContext(string connectionString)
-        { 
-            if (connectionString == null)
-                throw new ArgumentNullException();
-            
+
+        public AuctionSiteContext(string connectionString) 
+            : base(connectionString)
+        {
         }
 
-        public DbSet<ISite> Sites { get; set; }
-        public DbSet<IUser> Users { get; set; }
-        public DbSet<IAuction> Auctions { get; set; }
-        public DbSet<ISession> Sessions { get; set; }
+        public DbSet<Site> Sites { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Auction> Auctions { get; set; }
+        public DbSet<Session> Sessions { get; set; }
 
     }
 }
