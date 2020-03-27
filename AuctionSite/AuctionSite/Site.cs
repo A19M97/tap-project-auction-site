@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using TAP2018_19.AuctionSite.Interfaces;
 
 namespace Mugnai
@@ -45,9 +47,18 @@ namespace Mugnai
             throw new System.NotImplementedException();
         }
 
+        [Key, MinLength(DomainConstraints.MinSiteName), MaxLength(DomainConstraints.MaxSiteName)]
         public string Name { get; }
+
+        [Range(DomainConstraints.MinTimeZone, DomainConstraints.MaxTimeZone)]
         public int Timezone { get; }
+
+        [Range(1, int.MaxValue)]
         public int SessionExpirationInSeconds { get; }
+
+        [Range(1, double.MaxValue)]
         public double MinimumBidIncrement { get; }
+        public virtual ICollection<IUser> Users { get; set; }
+        public virtual ICollection<IAuction> Auctions { get; set; }
     }
 }
