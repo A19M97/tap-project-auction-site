@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using TAP2018_19.AuctionSite.Interfaces;
 
 namespace Mugnai
@@ -25,9 +26,9 @@ namespace Mugnai
             throw new NotImplementedException();
         }
 
-        public int Id { get; }
-        public IUser Seller { get; }
-        public string Description { get; }
-        public DateTime EndsOn { get; }
+        public int Id { get; set; }
+        public IUser Seller { get; set; }
+        public string Description { get; set; }
+        public DateTime EndsOn { get; set; }
     }
 }

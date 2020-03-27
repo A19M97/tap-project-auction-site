@@ -20,8 +20,8 @@ namespace Mugnai
             throw new NotImplementedException();
         }
 
-        public string Id { get; }
-        public DateTime ValidUntil { get; }
-        public IUser User { get; }
+        public string Id { get; set; }
+        public DateTime ValidUntil { get; set; }
+        public IUser User { get; set; }
     }
 }

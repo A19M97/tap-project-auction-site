@@ -16,10 +16,10 @@ namespace Mugnai
             throw new System.NotImplementedException();
         }
 
-        public int UserID { get; }
+        public int UserID { get; set; }
         [MinLength(DomainConstraints.MinUserName)]
-        public string Username { get; }
-        public ISite Site { get; }
-        public ISession Session { get; }
+        public string Username { get; set; }
+        public ISite Site { get; set; }
+        public ISession Session { get; set; }
     }
 }

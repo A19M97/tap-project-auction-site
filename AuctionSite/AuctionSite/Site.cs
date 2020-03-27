@@ -48,16 +48,16 @@ namespace Mugnai
         }
 
         [Key, MinLength(DomainConstraints.MinSiteName), MaxLength(DomainConstraints.MaxSiteName)]
-        public string Name { get; }
+        public string Name { get; set; }
 
         [Range(DomainConstraints.MinTimeZone, DomainConstraints.MaxTimeZone)]
-        public int Timezone { get; }
+        public int Timezone { get; set; }
 
         [Range(1, int.MaxValue)]
-        public int SessionExpirationInSeconds { get; }
+        public int SessionExpirationInSeconds { get; set; }
 
         [Range(1, double.MaxValue)]
-        public double MinimumBidIncrement { get; }
+        public double MinimumBidIncrement { get; set; }
         public virtual ICollection<IUser> Users { get; set; }
         public virtual ICollection<IAuction> Auctions { get; set; }
     }
