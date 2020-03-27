@@ -8,10 +8,12 @@ using TAP2018_19.AuctionSite.Interfaces;
 
 namespace Mugnai
 {
-    class SiteFactory : ISiteFactory
+    public class SiteFactory : ISiteFactory
     {
         public void Setup(string connectionString)
         {
+            if(null == connectionString)
+                throw new ArgumentNullException();
             throw new NotImplementedException();
         }
 
