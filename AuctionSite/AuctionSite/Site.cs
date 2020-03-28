@@ -56,7 +56,7 @@ namespace Mugnai
         [Range(1, int.MaxValue)]
         public int SessionExpirationInSeconds { get; set; }
 
-        [Range(1, double.MaxValue)]
+        [Range(0, double.MaxValue)]
         public double MinimumBidIncrement { get; set; }
         public virtual ICollection<IUser> Users { get; set; }
         public virtual ICollection<IAuction> Auctions { get; set; }
