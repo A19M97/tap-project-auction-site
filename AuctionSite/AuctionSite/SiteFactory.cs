@@ -46,14 +46,13 @@ namespace Mugnai
             if(null == connectionString || null == name)
                 throw new ArgumentNullException();
 
-            var nameLength = name.Length;
-            if(nameLength < DomainConstraints.MinSiteName || nameLength > DomainConstraints.MaxSiteName)
+            if (!IsValidSiteName(name))
                 throw new ArgumentException();
 
-            if (timezone < DomainConstraints.MinTimeZone || timezone > DomainConstraints.MaxTimeZone)
+            if (!IsValidTimezone(timezone))
                 throw new ArgumentOutOfRangeException();
 
-            if (sessionExpirationTimeInSeconds < 0 || minimumBidIncrement < 0)
+            if (!IsPositiveSessionExpiration(sessionExpirationTimeInSeconds) || !IsPositiveMinimumBidIncrement(minimumBidIncrement))
                 throw new ArgumentOutOfRangeException();
 
             using (var context = new AuctionSiteContext(connectionString))
@@ -79,17 +78,51 @@ namespace Mugnai
             }
         }
 
-        
-
-
         public ISite LoadSite(string connectionString, string name, IAlarmClock alarmClock)
         {
-            throw new NotImplementedException();
+            
+            if (null == connectionString || null == name || null == alarmClock)
+                throw new ArgumentNullException();
+            if (!IsValidSiteName(name))
+                throw new ArgumentException();
+            using (var context = new AuctionSiteContext(connectionString))
+            {
+                if (!IsValidConnectionString(context))
+                    throw new UnavailableDbException();
+                ISite site =
+                    (from siteDB in context.Sites
+                    where siteDB.Name == name
+                    select siteDB).FirstOrDefault();
+
+                if (null == site)
+                    throw new InexistentNameException(name);
+                if(site.Timezone != alarmClock.Timezone)
+                    throw new ArgumentException();
+                    
+                return site;
+            }
         }
 
         public int GetTheTimezoneOf(string connectionString, string name)
         {
-            throw new NotImplementedException();
+            if (null == connectionString || null == name)
+                throw new ArgumentNullException();
+            if (!IsValidSiteName(name))
+                throw new ArgumentException();
+            using (var context = new AuctionSiteContext(connectionString))
+            {
+                if (!IsValidConnectionString(context))
+                    throw new UnavailableDbException();
+                ISite site =
+                    (from siteDB in context.Sites
+                        where siteDB.Name == name
+                        select siteDB).FirstOrDefault();
+
+                if (null == site)
+                    throw new InexistentNameException(name);
+
+                return site.Timezone;
+            }
         }
 
         /* Aux methods*/
@@ -97,7 +130,26 @@ namespace Mugnai
         {
             return context.Database.Exists();
         }
+        private static bool IsPositiveMinimumBidIncrement(double minimumBidIncrement)
+        {
+            return minimumBidIncrement > 0;
+        }
 
+        private static bool IsPositiveSessionExpiration(int sessionExpirationTimeInSeconds)
+        {
+            return sessionExpirationTimeInSeconds > 0;
+        }
+
+        private static bool IsValidTimezone(int timezone)
+        {
+            return timezone >= DomainConstraints.MinTimeZone && timezone <= DomainConstraints.MaxTimeZone;
+        }
+
+        private static bool IsValidSiteName(string name)
+        {
+            var nameLength = name.Length;
+            return nameLength >= DomainConstraints.MinSiteName && nameLength <= DomainConstraints.MaxSiteName;
+        }
         private bool siteNameAlreadyExists(AuctionSiteContext context, string name)
         {
             return context.Sites.Any(site => site.Name == name);
