@@ -128,6 +128,7 @@
     <Compile Include="Auction.cs" />
     <Compile Include="AuctionSiteContext.cs" />
     <Compile Include="AuctionSIteNinjectModule.cs" />
+    <Compile Include="_aux\utils\Utils.cs" />
     <Compile Include="_aux\_debug\FormattedDbEntityValidationException.cs" />
     <Compile Include="Session.cs" />
     <Compile Include="Site.cs" />

@@ -4,7 +4,7 @@ using System.Data.Entity.Validation;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Mugnai._aux._debug;
+using Mugnai._aux.utils;
 using Ninject.Infrastructure.Language;
 using TAP2018_19.AlarmClock.Interfaces;
 using TAP2018_19.AuctionSite.Interfaces;
@@ -59,7 +59,7 @@ namespace Mugnai
             {
                 if (!IsValidConnectionString(context))
                     throw new UnavailableDbException();
-                if (siteNameAlreadyExists(context, name))
+                if (Utils.SiteNameAlreadyExists(context, name))
                     throw new NameAlreadyInUseException(name);
 
                 var site = new Site()
@@ -150,9 +150,6 @@ namespace Mugnai
             var nameLength = name.Length;
             return nameLength >= DomainConstraints.MinSiteName && nameLength <= DomainConstraints.MaxSiteName;
         }
-        private bool siteNameAlreadyExists(AuctionSiteContext context, string name)
-        {
-            return context.Sites.Any(site => site.Name == name);
-        }
+        
     }
 }
