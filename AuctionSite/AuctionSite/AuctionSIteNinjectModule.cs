@@ -10,10 +10,6 @@ namespace Mugnai
     [SecurityCritical]
     public class AuctionSiteNinjectModule : NinjectModule
     {
-        public AuctionSiteNinjectModule()
-        {
-
-        }
         [SecurityCritical]
         public override void Load()
         {
