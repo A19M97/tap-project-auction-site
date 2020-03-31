@@ -7,9 +7,12 @@ namespace Mugnai
 {
     public class User : IUser
     {
-        public User(string username)
+        public User() { }
+
+        public User(string username, string password)
         {
             this.Username = username;
+            this.Password = password;
         }
 
         public IEnumerable<IAuction> WonAuctions()
@@ -26,7 +29,7 @@ namespace Mugnai
 
         [MinLength(DomainConstraints.MinUserName)]
         public string Username { get; set; }
-
+        public string Password { get; set; }
         public string SiteName { get; set; }
 
         [ForeignKey("SiteName")]
