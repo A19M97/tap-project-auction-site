@@ -24,7 +24,7 @@ namespace Mugnai
                 }
                 catch (SqlException e)
                 {
-                    throw new UnavailableDbException("Database connection error", e);
+                    throw new UnavailableDbException("Database connection error.", e);
                 }
             }
         }
@@ -90,10 +90,11 @@ namespace Mugnai
                 throw new ArgumentException();
             using (var context = new AuctionSiteContext(connectionString))
             {
-                if(!ExistsDb(context))
+                
+                if (!ExistsDb(context))
                     throw new UnavailableDbException();
-                ISite site =
-                    (from siteDB in context.Sites
+                Site site =
+                    (from siteDB in context.Sites.Include("Auctions").Include("Users").Include("Users.Session")
                      where siteDB.Name == name
                      select siteDB).FirstOrDefault();
 
@@ -101,6 +102,7 @@ namespace Mugnai
                     throw new InexistentNameException(name);
                 if(site.Timezone != alarmClock.Timezone)
                     throw new ArgumentException();
+                site.AlarmClock = alarmClock;
                 return site;
             }
         }
