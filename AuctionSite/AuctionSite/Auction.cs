@@ -26,7 +26,7 @@ namespace Mugnai
         {
             throw new NotImplementedException();
         }
-
+        
         public int Id { get; set; }
         public IUser Seller { get; set; }
         public string Description { get; set; }
