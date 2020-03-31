@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity.Validation;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Mugnai._aux.utils;
-using Ninject.Infrastructure.Language;
 using TAP2018_19.AlarmClock.Interfaces;
 using TAP2018_19.AuctionSite.Interfaces;
 
@@ -19,10 +17,15 @@ namespace Mugnai
                 throw new ArgumentNullException();
             using (var context = new AuctionSiteContext(connectionString))
             {
-                if (!IsValidConnectionString(context))
-                    throw new UnavailableDbException();
                 context.Database.Delete();
-                context.Database.Create();
+                try
+                {
+                   context.Database.Create();
+                }
+                catch (SqlException e)
+                {
+                    throw new UnavailableDbException("Database connection error", e);
+                }
             }
         }
 
@@ -32,11 +35,11 @@ namespace Mugnai
                 throw new ArgumentNullException();
             using (var context = new AuctionSiteContext(connectionString))
             {
-                if (!IsValidConnectionString(context))
+                if (!ExistsDb(context))
                     throw new UnavailableDbException();
-                return ( 
+                return (
                     from site in context.Sites
-                    select site.Name ).ToList();
+                    select site.Name).ToList();
             }
         }
 
@@ -57,7 +60,7 @@ namespace Mugnai
 
             using (var context = new AuctionSiteContext(connectionString))
             {
-                if (!IsValidConnectionString(context))
+                if(!ExistsDb(context))
                     throw new UnavailableDbException();
                 if (Utils.SiteNameAlreadyExists(context, name))
                     throw new NameAlreadyInUseException(name);
@@ -80,53 +83,52 @@ namespace Mugnai
 
         public ISite LoadSite(string connectionString, string name, IAlarmClock alarmClock)
         {
-            
+
             if (null == connectionString || null == name || null == alarmClock)
                 throw new ArgumentNullException();
             if (!IsValidSiteName(name))
                 throw new ArgumentException();
             using (var context = new AuctionSiteContext(connectionString))
             {
-                if (!IsValidConnectionString(context))
+                if(!ExistsDb(context))
                     throw new UnavailableDbException();
                 ISite site =
                     (from siteDB in context.Sites
-                    where siteDB.Name == name
-                    select siteDB).FirstOrDefault();
+                     where siteDB.Name == name
+                     select siteDB).FirstOrDefault();
 
-                if (null == site)
+                if(null == site)
                     throw new InexistentNameException(name);
                 if(site.Timezone != alarmClock.Timezone)
                     throw new ArgumentException();
-                    
                 return site;
             }
         }
 
         public int GetTheTimezoneOf(string connectionString, string name)
         {
-            if (null == connectionString || null == name)
+            if(null == connectionString || null == name)
                 throw new ArgumentNullException();
-            if (!IsValidSiteName(name))
+            if(!IsValidSiteName(name))
                 throw new ArgumentException();
             using (var context = new AuctionSiteContext(connectionString))
             {
-                if (!IsValidConnectionString(context))
+                if(!ExistsDb(context))
                     throw new UnavailableDbException();
                 ISite site =
                     (from siteDB in context.Sites
-                        where siteDB.Name == name
-                        select siteDB).FirstOrDefault();
+                     where siteDB.Name == name
+                     select siteDB).FirstOrDefault();
 
-                if (null == site)
+                if(null == site)
                     throw new InexistentNameException(name);
 
                 return site.Timezone;
             }
         }
 
-        /* Aux methods*/
-        private static bool IsValidConnectionString(AuctionSiteContext context)
+        /* AUX METHODS*/
+        private static bool ExistsDb(AuctionSiteContext context)
         {
             return context.Database.Exists();
         }
@@ -150,6 +152,6 @@ namespace Mugnai
             var nameLength = name.Length;
             return nameLength >= DomainConstraints.MinSiteName && nameLength <= DomainConstraints.MaxSiteName;
         }
-        
+        /* END AUX METHODS*/
     }
 }
