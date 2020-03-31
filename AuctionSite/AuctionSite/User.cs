@@ -7,14 +7,6 @@ namespace Mugnai
 {
     public class User : IUser
     {
-        public User() { }
-
-        public User(string username, string password)
-        {
-            this.Username = username;
-            this.Password = password;
-        }
-
         public IEnumerable<IAuction> WonAuctions()
         {
             throw new System.NotImplementedException();
