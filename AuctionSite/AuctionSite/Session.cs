@@ -5,6 +5,12 @@ namespace Mugnai
 {
     public class Session : ISession
     {
+        public Session() { }
+        public Session(DateTime ValidUntil)
+        {
+            this.ValidUntil = ValidUntil;
+        }
+
         public bool IsValid()
         {
             throw new NotImplementedException();
