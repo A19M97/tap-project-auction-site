@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using TAP2018_19.AuctionSite.Interfaces;
 
 namespace Mugnai
@@ -20,6 +21,7 @@ namespace Mugnai
             throw new NotImplementedException();
         }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; }
         public DateTime ValidUntil { get; set; }
         public IUser User { get; set; }
