@@ -179,8 +179,10 @@ namespace Mugnai
         [DefaultValue(false)]
         public bool IsDeleted { get; set; }
 
-        internal IAlarmClock AlarmClock;
+        public IAlarmClock AlarmClock;
         public virtual ICollection<User> Users { get; set; }
         public virtual ICollection<Auction> Auctions { get; set; }
+
+        public IAlarm Alarm;
     }
 }

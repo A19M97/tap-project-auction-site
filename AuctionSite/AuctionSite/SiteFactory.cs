@@ -102,6 +102,10 @@ namespace Mugnai
                     throw new InexistentNameException(name);
                 if(site.Timezone != alarmClock.Timezone)
                     throw new ArgumentException();
+                /*
+                 * 5*60*1000 = 300000 = 5 minutes
+                 */
+                site.Alarm = alarmClock.InstantiateAlarm(5 * 60 * 1000);
                 site.AlarmClock = alarmClock;
                 return site;
             }
