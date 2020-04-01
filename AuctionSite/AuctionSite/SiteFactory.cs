@@ -107,6 +107,7 @@ namespace Mugnai
                  */
                 site.Alarm = alarmClock.InstantiateAlarm(5 * 60 * 1000);
                 site.AlarmClock = alarmClock;
+                site.ConnectionString = connectionString;
                 return site;
             }
         }

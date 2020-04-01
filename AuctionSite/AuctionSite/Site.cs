@@ -184,5 +184,7 @@ namespace Mugnai
         public virtual ICollection<Auction> Auctions { get; set; }
 
         public IAlarm Alarm;
+
+        internal string ConnectionString;
     }
 }
