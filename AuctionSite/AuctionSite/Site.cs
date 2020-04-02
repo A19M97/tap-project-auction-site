@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Data.Entity;
 using System.Linq;
 using Mugnai._aux.utils;
 using TAP2018_19.AlarmClock.Interfaces;
@@ -21,6 +22,7 @@ namespace Mugnai
             {
                 var users = (
                     from _users in context.Users
+                    where _users.SiteName == Name
                     select _users
                 ).ToList();
                 return users;
@@ -47,7 +49,26 @@ namespace Mugnai
 
         public IEnumerable<IAuction> GetAuctions(bool onlyNotEnded)
         {
-            throw new NotImplementedException();
+            if (Utils.IsSiteDisposed(this))
+                throw new InvalidOperationException();
+            using (var context = new AuctionSiteContext(ConnectionString))
+            {
+                List<Auction> auctions;
+                if (!onlyNotEnded) { 
+                    auctions = (
+                        from _auctions in context.Auctions
+                        select _auctions
+                    ).ToList();
+                }else {
+                    auctions = (
+                        from _auctions in context.Auctions
+                        where _auctions.EndsOn > this.AlarmClock.Now
+                        select _auctions
+                    ).ToList();
+                }
+                return auctions;
+            }
+
             /*
             if (Utils.IsSiteDisposed(this))
                 throw new InvalidOperationException();
@@ -121,7 +142,7 @@ namespace Mugnai
             DeleteAuctions();
             using (var context = new AuctionSiteContext(ConnectionString))
             {
-                context.Sites.Remove(this);
+                context.Entry(this).State = EntityState.Deleted;
                 context.SaveChanges();
                 IsDeleted = true;
             }
@@ -139,7 +160,7 @@ namespace Mugnai
                     );
                 foreach (var session in sessions)
                     if (!session.IsValid())
-                        context.Sessions.Remove(session);
+                        context.Entry(session).State = EntityState.Deleted;
                 context.SaveChanges();
             }
         }
