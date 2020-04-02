@@ -94,7 +94,7 @@ namespace Mugnai
                 if (!ExistsDb(context))
                     throw new UnavailableDbException();
                 Site site =
-                    (from siteDB in context.Sites.Include("Auctions").Include("Users").Include("Users.Session")
+                    (from siteDB in context.Sites//.Include("Auctions").Include("Users").Include("Users.Session")
                      where siteDB.Name == name
                      select siteDB).FirstOrDefault();
 
