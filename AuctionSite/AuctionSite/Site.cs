@@ -25,14 +25,6 @@ namespace Mugnai
                 ).ToList();
                 return users;
             }
-
-            /*
-            if(Utils.IsSiteDisposed(this))
-                throw new InvalidOperationException();
-            if(null == Users)
-                return  new List<User>();
-            return Users;
-            */
         }
 
         public IEnumerable<ISession> GetSessions()
@@ -110,20 +102,15 @@ namespace Mugnai
 
         public void CreateUser(string username, string password)
         {
-            
-            /*
             if (Utils.IsSiteDisposed(this))
                 throw new InvalidOperationException();
             if (null == username || null == password)
                 throw new ArgumentNullException();
-            if(!IsValidUsername(username) || !IsValidPassword(password))
+            if (!IsValidUsername(username) || !IsValidPassword(password))
                 throw new ArgumentException();
-
-            if (IsUsernameAlreadyUsedInSite(username)) 
-                throw new NameAlreadyInUseException("Username already used: "+username);
-
+            if (IsUsernameAlreadyUsedInSite(username))
+                throw new NameAlreadyInUseException("Username already used: " + username);
             AddUser(username, password);
-            */
         }
 
         public void Delete()
@@ -173,14 +160,17 @@ namespace Mugnai
 
         private void AddUser(string username, string password)
         {
-            if (null == Users)
-                Users = new List<User>();
-            Users.Add(
-                new User{
+            using (var context = new AuctionSiteContext(ConnectionString))
+            {
+                var user = new User()
+                {
                     Username = username,
-                    Password = password
-                }
-            );
+                    Password = password,
+                    SiteName = Name
+                };
+                context.Users.Add(user);
+                context.SaveChanges();
+            }
         }
 
         private bool IsUsernameAlreadyUsedInSite(string username)
