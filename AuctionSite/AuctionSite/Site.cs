@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using Mugnai._aux.utils;
 using TAP2018_19.AlarmClock.Interfaces;
 using TAP2018_19.AuctionSite.Interfaces;
@@ -14,15 +15,20 @@ namespace Mugnai
         
         public IEnumerable<IUser> GetUsers()
         {
+            throw new NotImplementedException();
+            /*
             if(Utils.IsSiteDisposed(this))
                 throw new InvalidOperationException();
             if(null == Users)
                 return  new List<User>();
             return Users;
+            */
         }
 
         public IEnumerable<ISession> GetSessions()
         {
+            throw new NotImplementedException();
+            /*
             if (Utils.IsSiteDisposed(this))
                 throw new InvalidOperationException();
             var sessions = new List<ISession>();
@@ -34,11 +40,13 @@ namespace Mugnai
                     sessions.Add(user.Session);
             }
             return sessions;
-
+            */
         }
 
         public IEnumerable<IAuction> GetAuctions(bool onlyNotEnded)
         {
+            throw new NotImplementedException();
+            /*
             if (Utils.IsSiteDisposed(this))
                 throw new InvalidOperationException();
             if (null == Auctions)
@@ -50,11 +58,13 @@ namespace Mugnai
                 if (!Utils.IsEndedAuction(auction))
                     auctionsNotEnded.Add(auction);
             return auctionsNotEnded;
-
+            */
         }
 
         public ISession Login(string username, string password)
         {
+            throw new NotImplementedException();
+            /*
             if (Utils.IsSiteDisposed(this))
                 throw new InvalidOperationException();
             if(null == username || null == password)
@@ -70,10 +80,13 @@ namespace Mugnai
             if (null == user.Session || !user.Session.IsValid())
                 user.Session = Utils.CreateNewSession(this, user);
             return user.Session;
+            */
         }
 
         public ISession GetSession(string sessionId)
         {
+            throw new NotImplementedException();
+            /*
             if (Utils.IsSiteDisposed(this))
                 throw new InvalidOperationException();
             if (null == sessionId)
@@ -82,10 +95,13 @@ namespace Mugnai
                 if (user.Session.Id == sessionId && user.Session.IsValid())
                     return user.Session;
             return null;
+            */
         }
 
         public void CreateUser(string username, string password)
         {
+            throw new NotImplementedException();
+            /*
             if (Utils.IsSiteDisposed(this))
                 throw new InvalidOperationException();
             if (null == username || null == password)
@@ -96,11 +112,14 @@ namespace Mugnai
             if (IsUsernameAlreadyUsedInSite(username)) 
                 throw new NameAlreadyInUseException("Username already used: "+username);
 
-           AddUser(username, password);
+            AddUser(username, password);
+            */
         }
 
         public void Delete()
         {
+            throw new NotImplementedException();
+            /*
             if (Utils.IsSiteDisposed(this))
                 throw new InvalidOperationException();
             if (null != Users)
@@ -109,14 +128,24 @@ namespace Mugnai
             if (null != Auctions)
                 foreach (var auction in Auctions)
                     auction.Delete();
-            IsDeleted = true;
+            IsDeleted = true;*/
         }
 
         public void CleanupSessions()
         {
             if (Utils.IsSiteDisposed(this))
                 throw new InvalidOperationException();
-            throw new System.NotImplementedException();
+            using (var context = new AuctionSiteContext(ConnectionString))
+            {
+                var sessions = (
+                        from _sessions in context.Sessions
+                        select _sessions
+                    );
+                foreach (var session in sessions)
+                    if (!session.IsValid())
+                        context.Sessions.Remove(session);
+                context.SaveChanges();
+            }
         }
 
         /*AUX METHODS*/
@@ -176,15 +205,15 @@ namespace Mugnai
         [Range(0, double.MaxValue)]
         public double MinimumBidIncrement { get; set; }
 
-        [DefaultValue(false)]
-        public bool IsDeleted { get; set; }
-
-        public IAlarmClock AlarmClock;
         public virtual ICollection<User> Users { get; set; }
         public virtual ICollection<Auction> Auctions { get; set; }
 
         public IAlarm Alarm;
 
         internal string ConnectionString;
+        
+        public bool IsDeleted;
+
+        public IAlarmClock AlarmClock;
     }
 }
