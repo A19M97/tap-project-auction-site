@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Data.Common.CommandTrees;
 using System.Data.Entity;
 using System.Linq;
+using System.Net.Sockets;
 using Mugnai._aux.utils;
 using TAP2018_19.AlarmClock.Interfaces;
 using TAP2018_19.AuctionSite.Interfaces;
@@ -31,20 +33,19 @@ namespace Mugnai
 
         public IEnumerable<ISession> GetSessions()
         {
-            throw new NotImplementedException();
-            /*
             if (Utils.IsSiteDisposed(this))
                 throw new InvalidOperationException();
-            var sessions = new List<ISession>();
-            if (null == Users)
-                return sessions;
-            foreach (var user in Users)
+            using (var context = new AuctionSiteContext(ConnectionString))
             {
-                if (null != user.Session)
-                    sessions.Add(user.Session);
+                var sessions = (
+                    from _site in context.Sites join _users in context.Users on Name equals _users.SiteName
+                    join _sessions in context.Sessions on _users.Session.Id equals _sessions.Id
+                    where _sessions.ValidUntil > AlarmClock.Now
+                    select _sessions
+                ).ToList();
+                return sessions;
             }
-            return sessions;
-            */
+            throw new NotImplementedException();
         }
 
         public IEnumerable<IAuction> GetAuctions(bool onlyNotEnded)
@@ -57,31 +58,18 @@ namespace Mugnai
                 if (!onlyNotEnded) { 
                     auctions = (
                         from _auctions in context.Auctions
+                        where _auctions.SiteName == Name
                         select _auctions
                     ).ToList();
                 }else {
                     auctions = (
                         from _auctions in context.Auctions
-                        where _auctions.EndsOn > this.AlarmClock.Now
+                        where _auctions.SiteName == Name &&_auctions.EndsOn > this.AlarmClock.Now
                         select _auctions
                     ).ToList();
                 }
                 return auctions;
             }
-
-            /*
-            if (Utils.IsSiteDisposed(this))
-                throw new InvalidOperationException();
-            if (null == Auctions)
-                Auctions = new List<Auction>();
-            if (!onlyNotEnded)
-                return Auctions;
-            var auctionsNotEnded = new List<IAuction>();
-            foreach (var auction in Auctions)
-                if (!Utils.IsEndedAuction(auction))
-                    auctionsNotEnded.Add(auction);
-            return auctionsNotEnded;
-            */
         }
 
         public ISession Login(string username, string password)
@@ -108,17 +96,15 @@ namespace Mugnai
 
         public ISession GetSession(string sessionId)
         {
-            throw new NotImplementedException();
-            /*
             if (Utils.IsSiteDisposed(this))
                 throw new InvalidOperationException();
             if (null == sessionId)
                 throw new ArgumentNullException();
-            foreach (var user in Users)
-                if (user.Session.Id == sessionId && user.Session.IsValid())
-                    return user.Session;
-            return null;
-            */
+            using (var context = new AuctionSiteContext(ConnectionString))
+            {
+                var session = context.Sessions.Find(sessionId);
+                return session;
+            }
         }
 
         public void CreateUser(string username, string password)
