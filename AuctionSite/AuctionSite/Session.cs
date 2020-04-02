@@ -21,7 +21,6 @@ namespace Mugnai
             throw new NotImplementedException();
         }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; }
         public DateTime ValidUntil { get; set; }
         public IUser User { get; set; }

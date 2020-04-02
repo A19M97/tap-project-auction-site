@@ -17,6 +17,7 @@ namespace Mugnai
             throw new System.NotImplementedException();
         }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int UserID { get; set; }
 
         [MinLength(DomainConstraints.MinUserName)]
