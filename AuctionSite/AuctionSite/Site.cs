@@ -15,7 +15,17 @@ namespace Mugnai
         
         public IEnumerable<IUser> GetUsers()
         {
-            throw new NotImplementedException();
+            if (Utils.IsSiteDisposed(this))
+                throw new InvalidOperationException();
+            using (var context = new AuctionSiteContext(ConnectionString))
+            {
+                var users = (
+                    from _users in context.Users
+                    select _users
+                ).ToList();
+                return users;
+            }
+
             /*
             if(Utils.IsSiteDisposed(this))
                 throw new InvalidOperationException();
@@ -100,7 +110,7 @@ namespace Mugnai
 
         public void CreateUser(string username, string password)
         {
-            throw new NotImplementedException();
+            
             /*
             if (Utils.IsSiteDisposed(this))
                 throw new InvalidOperationException();
