@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using TAP2018_19.AuctionSite.Interfaces;
 
@@ -23,6 +24,8 @@ namespace Mugnai
 
         public string Id { get; set; }
         public DateTime ValidUntil { get; set; }
-        public IUser User { get; set; }
+        public virtual IUser User { get; set; }
+
+
     }
 }

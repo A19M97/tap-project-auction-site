@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Mugnai._aux._debug;
 using TAP2018_19.AuctionSite.Interfaces;
 
 namespace Mugnai._aux.utils
@@ -31,11 +33,22 @@ namespace Mugnai._aux.utils
 
         internal static Session CreateNewSession(Site site, User user)
         {
-            return new Session
+            using (var context = new AuctionSiteContext(site.ConnectionString))
             {
-                ValidUntil = site.AlarmClock.Now.AddSeconds(site.SessionExpirationInSeconds),
-                User = user
-            };
+                var session = new Session
+                {
+                    Id = CreateSessionId(site, user),
+                    ValidUntil = site.AlarmClock.Now.AddSeconds(site.SessionExpirationInSeconds)
+                };
+                context.Sessions.Add(session); 
+                context.SaveChanges();
+                return session;
+            }
+        }
+
+        public static string CreateSessionId(Site site, User user)
+        {
+            return site.Name.ToString() + user.UserID.ToString();
         }
     }
 }

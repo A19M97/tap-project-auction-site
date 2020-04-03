@@ -23,7 +23,7 @@ namespace Mugnai
             using (var context = new AuctionSiteContext(ConnectionString))
             {
                 var users = (
-                    from _users in context.Users
+                    from _users in context.Users.Include("Session")
                     where _users.SiteName == Name
                     select _users
                 ).ToList();
@@ -35,17 +35,16 @@ namespace Mugnai
         {
             if (Utils.IsSiteDisposed(this))
                 throw new InvalidOperationException();
-            using (var context = new AuctionSiteContext(ConnectionString))
-            {
-                var sessions = (
-                    from _site in context.Sites join _users in context.Users on Name equals _users.SiteName
-                    join _sessions in context.Sessions on _users.Session.Id equals _sessions.Id
-                    where _sessions.ValidUntil > AlarmClock.Now
-                    select _sessions
-                ).ToList();
-                return sessions;
-            }
-            throw new NotImplementedException();
+            var sessions = new List<Session>();
+            foreach (User user in GetUsers())
+                if(null != user.Session)
+                {
+                    user.Session.User = user;
+                    sessions.Add(user.Session);
+                }
+            return sessions;
+
+
         }
 
         public IEnumerable<IAuction> GetAuctions(bool onlyNotEnded)
@@ -74,24 +73,33 @@ namespace Mugnai
 
         public ISession Login(string username, string password)
         {
-            throw new NotImplementedException();
-            /*
             if (Utils.IsSiteDisposed(this))
                 throw new InvalidOperationException();
-            if(null == username || null == password)
+            if (null == username || null == password)
                 throw new ArgumentNullException();
             if (!IsValidUsername(username) || !IsValidPassword(password))
                 throw new ArgumentException();
 
             User user = GetUserByUsername(username);
+            if (null == user)
+                return null;
 
             if (!Utils.ArePasswordsEquals(user.Password, password))
                 return null;
 
-            if (null == user.Session || !user.Session.IsValid())
-                user.Session = Utils.CreateNewSession(this, user);
-            return user.Session;
-            */
+            //return GetUserSession(user);
+
+
+            var userSession = GetUserSession(user);
+            user.SessionId = userSession.Id;
+            using (var context = new AuctionSiteContext(ConnectionString))
+            {
+                context.Entry(user).State = EntityState.Modified;
+                context.SaveChanges();
+            }
+
+            return userSession;
+
         }
 
         public ISession GetSession(string sessionId)
@@ -103,7 +111,9 @@ namespace Mugnai
             using (var context = new AuctionSiteContext(ConnectionString))
             {
                 var session = context.Sessions.Find(sessionId);
-                return session;
+                if(session.IsValid())
+                    return session;
+                return null;
             }
         }
 
@@ -207,6 +217,19 @@ namespace Mugnai
                     return user as User;
             }
             return null;
+        }
+
+        private Session GetUserSession(User user)
+        {
+
+            using (var context = new AuctionSiteContext(ConnectionString))
+            {
+                var session = context.Sessions.Find(Utils.CreateSessionId(this, user));
+                if (null == session || !session.IsValid())
+                    user.Session = Utils.CreateNewSession(this, user);
+                //session.User = user;
+                return user.Session;
+            }
         }
 
         /*END AUX METHODS*/
