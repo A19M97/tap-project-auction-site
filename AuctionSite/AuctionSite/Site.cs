@@ -108,6 +108,8 @@ namespace Mugnai
                 throw new InvalidOperationException();
             if (null == sessionId)
                 throw new ArgumentNullException();
+            if ("" == sessionId)
+                return null;
             using (var context = new AuctionSiteContext(ConnectionString))
             {
                 var session = context.Sessions.Find(sessionId);
