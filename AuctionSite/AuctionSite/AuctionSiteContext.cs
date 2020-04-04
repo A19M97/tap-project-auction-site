@@ -1,7 +1,4 @@
-﻿using System;
-using System.Data.Entity;
-using System.Security;
-using TAP2018_19.AuctionSite.Interfaces;
+﻿using System.Data.Entity;
 
 namespace Mugnai
 {

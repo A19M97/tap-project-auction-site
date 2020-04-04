@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using TAP2018_19.AuctionSite.Interfaces;
 
 namespace Mugnai._aux.utils
@@ -12,11 +8,6 @@ namespace Mugnai._aux.utils
         public static bool SiteNameAlreadyExists(AuctionSiteContext context, string name)
         {
             return context.Sites.Any(site => site.Name == name);
-        }
-
-        public static bool IsEndedAuction(IAuction auction)
-        {
-            return auction.EndsOn < DateTime.Now;
         }
 
         public static bool IsSiteDisposed(Site site)
@@ -31,11 +22,34 @@ namespace Mugnai._aux.utils
 
         internal static Session CreateNewSession(Site site, User user)
         {
-            return new Session
+            using (var context = new AuctionSiteContext(site.ConnectionString))
             {
-                ValidUntil = site.AlarmClock.Now.AddSeconds(site.SessionExpirationInSeconds),
-                User = user
-            };
+                var session = new Session
+                {
+                    Id = CreateSessionId(site, user),
+                    ValidUntil = site.AlarmClock.Now.AddSeconds(site.SessionExpirationInSeconds),
+                    User = user
+                };
+                context.Sessions.Add(session); 
+                context.SaveChanges();
+                return session;
+            }
+        }
+
+        public static string CreateSessionId(Site site, User user)
+        {
+            return site.Name + user.UserID;
+        }
+
+        public static bool IsValidUsername(string username)
+        {
+            var usernameLength = username.Length;
+            return usernameLength >= DomainConstraints.MinUserName && usernameLength <= DomainConstraints.MaxUserName;
+        }
+
+        public static bool IsValidPassword(string password)
+        {
+            return password.Length >= DomainConstraints.MinUserPassword;
         }
     }
 }

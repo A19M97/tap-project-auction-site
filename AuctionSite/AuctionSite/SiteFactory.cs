@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using Mugnai._aux.utils;
@@ -94,9 +93,9 @@ namespace Mugnai
                 if (!ExistsDb(context))
                     throw new UnavailableDbException();
                 Site site =
-                    (from siteDB in context.Sites.Include("Auctions").Include("Users").Include("Users.Session")
-                     where siteDB.Name == name
-                     select siteDB).FirstOrDefault();
+                    (from siteDb in context.Sites
+                     where siteDb.Name == name
+                     select siteDb).FirstOrDefault();
 
                 if(null == site)
                     throw new InexistentNameException(name);
@@ -105,8 +104,12 @@ namespace Mugnai
                 /*
                  * 5*60*1000 = 300000 = 5 minutes
                  */
-                site.Alarm = alarmClock.InstantiateAlarm(5 * 60 * 1000);
                 site.AlarmClock = alarmClock;
+                site.Alarm = site.AlarmClock.InstantiateAlarm(5 * 60 * 1000);
+                site.Alarm.RingingEvent += site.CleanupSessionOnRingingEvent;
+
+                site.ConnectionString = connectionString;
+
                 return site;
             }
         }
@@ -122,9 +125,9 @@ namespace Mugnai
                 if(!ExistsDb(context))
                     throw new UnavailableDbException();
                 ISite site =
-                    (from siteDB in context.Sites
-                     where siteDB.Name == name
-                     select siteDB).FirstOrDefault();
+                    (from siteDb in context.Sites
+                     where siteDb.Name == name
+                     select siteDb).FirstOrDefault();
 
                 if(null == site)
                     throw new InexistentNameException(name);
@@ -138,6 +141,7 @@ namespace Mugnai
         {
             return context.Database.Exists();
         }
+
         private static bool IsPositiveMinimumBidIncrement(double minimumBidIncrement)
         {
             return minimumBidIncrement > 0;

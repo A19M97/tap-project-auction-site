@@ -7,6 +7,16 @@ namespace Mugnai
 {
     public class User : IUser
     {
+        public override bool Equals(object obj)
+        {
+            if (null == obj) return false;
+            if (!(obj is User)) return false;
+            return ((User)obj).UserID == this.UserID;
+        }
+
+        public override int GetHashCode() => UserID.GetHashCode();
+
+
         public IEnumerable<IAuction> WonAuctions()
         {
             throw new System.NotImplementedException();
@@ -17,6 +27,7 @@ namespace Mugnai
             throw new System.NotImplementedException();
         }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int UserID { get; set; }
 
         [MinLength(DomainConstraints.MinUserName)]
@@ -26,7 +37,8 @@ namespace Mugnai
 
         [ForeignKey("SiteName")]
         public ISite Site { get; set; }
-
+        public virtual string SessionId { get; set; }
+        [ForeignKey("SessionId")]
         public virtual Session Session { get; set; }
     }
 }
