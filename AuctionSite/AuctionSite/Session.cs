@@ -14,10 +14,7 @@ namespace Mugnai
             return (obj as ISession).Id == this.Id;
         }
 
-        public override int GetHashCode()
-        {
-            return this.Id.GetHashCode();
-        }
+        public override int GetHashCode() => Id.GetHashCode();
 
         public bool IsValid()
         {
@@ -31,6 +28,14 @@ namespace Mugnai
 
         public IAuction CreateAuction(string description, DateTime endsOn, double startingPrice)
         {
+            if (!IsValid())
+                throw new InvalidOperationException();
+            if (null == description)
+                throw new ArgumentNullException();
+            if ("" == description)
+                throw new ArgumentException();
+            if(startingPrice < 0)
+                throw new ArgumentOutOfRangeException();
             throw new NotImplementedException();
         }
 
