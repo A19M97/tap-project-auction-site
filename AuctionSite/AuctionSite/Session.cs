@@ -7,6 +7,18 @@ namespace Mugnai
 {
     public class Session : ISession
     {
+        public override bool Equals(object obj)
+        {
+            if (null == obj) return false;
+            if (!(obj is ISession)) return false;
+            return (obj as ISession).Id == this.Id;
+        }
+
+        public override int GetHashCode()
+        {
+            return this.Id.GetHashCode();
+        }
+
         public bool IsValid()
         {
             throw new NotImplementedException();

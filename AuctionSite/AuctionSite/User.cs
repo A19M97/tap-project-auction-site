@@ -14,6 +14,11 @@ namespace Mugnai
             return (obj as User).Username == this.Username;
         }
 
+        public override int GetHashCode()
+        {
+            return this.UserID.GetHashCode();
+        }
+
 
         public IEnumerable<IAuction> WonAuctions()
         {
