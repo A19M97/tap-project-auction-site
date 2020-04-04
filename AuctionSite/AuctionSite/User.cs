@@ -11,7 +11,7 @@ namespace Mugnai
         {
             if (null == obj) return false;
             if (!(obj is User)) return false;
-            return ((User) obj).Username == this.Username;
+            return ((User)obj).UserID == this.UserID;
         }
 
         public override int GetHashCode() => UserID.GetHashCode();
