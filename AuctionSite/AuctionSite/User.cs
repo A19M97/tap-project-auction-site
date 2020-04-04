@@ -11,13 +11,10 @@ namespace Mugnai
         {
             if (null == obj) return false;
             if (!(obj is User)) return false;
-            return (obj as User).Username == this.Username;
+            return ((User) obj).Username == this.Username;
         }
 
-        public override int GetHashCode()
-        {
-            return this.UserID.GetHashCode();
-        }
+        public override int GetHashCode() => UserID.GetHashCode();
 
 
         public IEnumerable<IAuction> WonAuctions()

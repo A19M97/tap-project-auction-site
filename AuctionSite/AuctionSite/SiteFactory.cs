@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using Mugnai._aux.utils;
@@ -94,9 +93,9 @@ namespace Mugnai
                 if (!ExistsDb(context))
                     throw new UnavailableDbException();
                 Site site =
-                    (from siteDB in context.Sites//.Include("Auctions").Include("Users").Include("Users.Session")
-                     where siteDB.Name == name
-                     select siteDB).FirstOrDefault();
+                    (from siteDb in context.Sites
+                     where siteDb.Name == name
+                     select siteDb).FirstOrDefault();
 
                 if(null == site)
                     throw new InexistentNameException(name);
@@ -115,7 +114,6 @@ namespace Mugnai
             }
         }
 
-
         public int GetTheTimezoneOf(string connectionString, string name)
         {
             if(null == connectionString || null == name)
@@ -127,9 +125,9 @@ namespace Mugnai
                 if(!ExistsDb(context))
                     throw new UnavailableDbException();
                 ISite site =
-                    (from siteDB in context.Sites
-                     where siteDB.Name == name
-                     select siteDB).FirstOrDefault();
+                    (from siteDb in context.Sites
+                     where siteDb.Name == name
+                     select siteDb).FirstOrDefault();
 
                 if(null == site)
                     throw new InexistentNameException(name);
@@ -143,6 +141,7 @@ namespace Mugnai
         {
             return context.Database.Exists();
         }
+
         private static bool IsPositiveMinimumBidIncrement(double minimumBidIncrement)
         {
             return minimumBidIncrement > 0;

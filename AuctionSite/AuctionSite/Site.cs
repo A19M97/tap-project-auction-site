@@ -20,9 +20,9 @@ namespace Mugnai
             using (var context = new AuctionSiteContext(ConnectionString))
             {
                 var users = (
-                    from _users in context.Users.Include("Session")
-                    where _users.SiteName == Name
-                    select _users
+                    from user in context.Users.Include("Session")
+                    where user.SiteName == Name
+                    select user
                 ).ToList();
                 return users;
             }
@@ -33,15 +33,16 @@ namespace Mugnai
             if (Utils.IsSiteDisposed(this))
                 throw new InvalidOperationException();
             var sessions = new List<Session>();
-            foreach (User user in GetUsers())
-                if(null != user.Session)
+            foreach (var iUser in GetUsers())
+            {
+                var user = iUser as User;
+                if(user?.Session != null)
                 {
                     user.Session.User = user;
                     sessions.Add(user.Session);
                 }
+            }
             return sessions;
-
-
         }
 
         public IEnumerable<IAuction> GetAuctions(bool onlyNotEnded)
@@ -53,15 +54,15 @@ namespace Mugnai
                 List<Auction> auctions;
                 if (!onlyNotEnded) { 
                     auctions = (
-                        from _auctions in context.Auctions
-                        where _auctions.SiteName == Name
-                        select _auctions
+                        from auction in context.Auctions
+                        where auction.SiteName == Name
+                        select auction
                     ).ToList();
                 }else {
                     auctions = (
-                        from _auctions in context.Auctions
-                        where _auctions.SiteName == Name &&_auctions.EndsOn > this.AlarmClock.Now
-                        select _auctions
+                        from auction in context.Auctions
+                        where auction.SiteName == Name &&auction.EndsOn > this.AlarmClock.Now
+                        select auction
                     ).ToList();
                 }
                 return auctions;
@@ -74,7 +75,7 @@ namespace Mugnai
                 throw new InvalidOperationException();
             if (null == username || null == password)
                 throw new ArgumentNullException();
-            if (!IsValidUsername(username) || !IsValidPassword(password))
+            if (!Utils.IsValidUsername(username) || !Utils.IsValidPassword(password))
                 throw new ArgumentException();
 
             User user = GetUserByUsername(username);
@@ -83,9 +84,6 @@ namespace Mugnai
 
             if (!Utils.ArePasswordsEquals(user.Password, password))
                 return null;
-
-            //return GetUserSession(user);
-
 
             var userSession = GetUserSession(user);
             user.SessionId = userSession.Id;
@@ -110,7 +108,7 @@ namespace Mugnai
             using (var context = new AuctionSiteContext(ConnectionString))
             {
                 var session = context.Sessions.Find(sessionId);
-                if(session.IsValid())
+                if(null != session && session.IsValid())
                     return session;
                 return null;
             }
@@ -122,7 +120,7 @@ namespace Mugnai
                 throw new InvalidOperationException();
             if (null == username || null == password)
                 throw new ArgumentNullException();
-            if (!IsValidUsername(username) || !IsValidPassword(password))
+            if (!Utils.IsValidUsername(username) || !Utils.IsValidPassword(password))
                 throw new ArgumentException();
             if (IsUsernameAlreadyUsedInSite(username))
                 throw new NameAlreadyInUseException("Username already used: " + username);
@@ -150,8 +148,8 @@ namespace Mugnai
             using (var context = new AuctionSiteContext(ConnectionString))
             {
                 var sessions = (
-                        from _sessions in context.Sessions
-                        select _sessions
+                        from session in context.Sessions
+                        select session
                     );
                 foreach (var session in sessions)
                     if (!session.IsValid())
@@ -161,17 +159,6 @@ namespace Mugnai
         }
 
         /*AUX METHODS*/
-
-        private bool IsValidUsername(string username)
-        {
-            var usernameLength = username.Length;
-            return usernameLength >= DomainConstraints.MinUserName && usernameLength <= DomainConstraints.MaxUserName;
-        }
-
-        private bool IsValidPassword(string password)
-        {
-            return password.Length >= DomainConstraints.MinUserPassword;
-        }
 
         private void AddUser(string username, string password)
         {
@@ -251,6 +238,7 @@ namespace Mugnai
         public double MinimumBidIncrement { get; set; }
 
         public virtual ICollection<User> Users { get; set; }
+
         public virtual ICollection<Auction> Auctions { get; set; }
 
         public IAlarm Alarm;
