@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Data.Common.CommandTrees;
 using System.Data.Entity;
 using System.Linq;
-using System.Net.Sockets;
 using Mugnai._aux.utils;
 using TAP2018_19.AlarmClock.Interfaces;
 using TAP2018_19.AuctionSite.Interfaces;
@@ -232,6 +229,11 @@ namespace Mugnai
                 //session.User = user;
                 return user.Session;
             }
+        }
+
+        public void CleanupSessionOnRingingEvent()
+        {
+            this.CleanupSessions();
         }
 
         /*END AUX METHODS*/

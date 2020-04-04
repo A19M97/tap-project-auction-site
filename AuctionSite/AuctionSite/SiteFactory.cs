@@ -105,12 +105,16 @@ namespace Mugnai
                 /*
                  * 5*60*1000 = 300000 = 5 minutes
                  */
-                site.Alarm = alarmClock.InstantiateAlarm(5 * 60 * 1000);
                 site.AlarmClock = alarmClock;
+                site.Alarm = site.AlarmClock.InstantiateAlarm(5 * 60 * 1000);
+                site.Alarm.RingingEvent += site.CleanupSessionOnRingingEvent;
+
                 site.ConnectionString = connectionString;
+
                 return site;
             }
         }
+
 
         public int GetTheTimezoneOf(string connectionString, string name)
         {
