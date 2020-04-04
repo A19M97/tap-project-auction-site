@@ -38,7 +38,8 @@ namespace Mugnai._aux.utils
                 var session = new Session
                 {
                     Id = CreateSessionId(site, user),
-                    ValidUntil = site.AlarmClock.Now.AddSeconds(site.SessionExpirationInSeconds)
+                    ValidUntil = site.AlarmClock.Now.AddSeconds(site.SessionExpirationInSeconds),
+                    User = user
                 };
                 context.Sessions.Add(session); 
                 context.SaveChanges();
