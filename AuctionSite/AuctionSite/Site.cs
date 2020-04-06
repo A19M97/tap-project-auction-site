@@ -17,15 +17,9 @@ namespace Mugnai
         {
             if (Utils.IsSiteDisposed(this))
                 throw new InvalidOperationException();
-            using (var context = new AuctionSiteContext(ConnectionString))
-            {
-                var users = (
-                    from user in context.Users.Include("Session")
-                    where user.SiteName == Name
-                    select user
-                ).ToList();
-                return users;
-            }
+            if(null == Users)
+                return new List<IUser>();
+            return Users;
         }
 
         public IEnumerable<ISession> GetSessions()
@@ -162,9 +156,10 @@ namespace Mugnai
 
         private void AddUser(string username, string password)
         {
+            User user;
             using (var context = new AuctionSiteContext(ConnectionString))
             {
-                var user = new User()
+                user = new User()
                 {
                     Username = username,
                     Password = password,
@@ -173,6 +168,10 @@ namespace Mugnai
                 context.Users.Add(user);
                 context.SaveChanges();
             }
+            user.Site = this;
+            if(null == Users)
+                Users = new List<User>();
+            Users.Add(user);
         }
 
         private bool IsUsernameAlreadyUsedInSite(string username)

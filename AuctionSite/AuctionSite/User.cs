@@ -36,7 +36,7 @@ namespace Mugnai
         public string SiteName { get; set; }
 
         [ForeignKey("SiteName")]
-        public ISite Site { get; set; }
+        public virtual Site Site { get; set; }
         public virtual string SessionId { get; set; }
         [ForeignKey("SessionId")]
         public virtual Session Session { get; set; }
