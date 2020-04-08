@@ -1,12 +1,18 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using TAP2018_19.AuctionSite.Interfaces;
 
-namespace Mugnai
+namespace AuctionSiteLogic
 {
-    public class Auction : IAuction
+    class AuctionLogic : IAuction
     {
+        public int Id { get; }
+        public IUser Seller { get; }
+        public string Description { get; }
+        public DateTime EndsOn { get; }
         public IUser CurrentWinner()
         {
             throw new NotImplementedException();
@@ -26,13 +32,5 @@ namespace Mugnai
         {
             throw new NotImplementedException();
         }
-        
-        public int Id { get; set; }
-        public IUser Seller { get; set; }
-        public string Description { get; set; }
-        public DateTime EndsOn { get; set; }
-        public string SiteName { get; set; }
-        [ForeignKey("SiteName")]
-        public ISite Site { get; set; }
     }
 }

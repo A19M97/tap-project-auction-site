@@ -1,5 +1,6 @@
 ﻿using System.Data.Entity;
 using System.Security;
+using AuctionSiteLogic;
 using Ninject.Modules;
 using TAP2018_19.AuctionSite.Interfaces;
 
@@ -15,10 +16,10 @@ namespace Mugnai
         {
             Database.SetInitializer<AuctionSiteContext>(null);
             this.Bind<ISiteFactory>().To<SiteFactory> ();
-            this.Bind<ISite>().To<Site>();
-            this.Bind<ISession>().To<Session>();
-            this.Bind<IUser>().To<User>();
-            this.Bind<IAuction>().To<Auction>();
+            this.Bind<ISite>().To<SiteLogic>();
+            this.Bind<ISession>().To<SessionLogic>();
+            this.Bind<IUser>().To<UserLogic>();
+            this.Bind<IAuction>().To<AuctionLogic>();
         }
     }
 

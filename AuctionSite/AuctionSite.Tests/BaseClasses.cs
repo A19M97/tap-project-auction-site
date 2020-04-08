@@ -13,7 +13,7 @@ namespace TAP2018_19.TestBaseClasses
     internal static class Configuration
     {
         internal const string ImplementationAssembly =
-            @"C:\Users\andre\source\repos\tap-project-auction-site-A19M97\AuctionSite\AuctionSite\bin\Debug\Mugnai.dll";
+            @"C:\Users\andre\source\repos\tap-project-auction-site-A19M97\AuctionSite\AuctionSiteLogic\bin\Debug\AuctionSiteLogic.dll";
 
         internal const string ConnectionString =
             @"Data Source=.\SQLEXPRESS;Initial Catalog=AuctionSite;Integrated Security=True;";

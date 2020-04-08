@@ -12,7 +12,8 @@ namespace Mugnai._aux.utils
 
         public static bool IsSiteDisposed(Site site)
         {
-            return site.IsDeleted;
+            return true;
+            /*return site.IsDeleted;*/
         }
 
         internal static bool ArePasswordsEquals(string password1, string password2)
@@ -22,18 +23,19 @@ namespace Mugnai._aux.utils
 
         internal static Session CreateNewSession(Site site, User user)
         {
-            using (var context = new AuctionSiteContext(site.ConnectionString))
-            {
-                var session = new Session
-                {
-                    Id = CreateSessionId(site, user),
-                    ValidUntil = site.AlarmClock.Now.AddSeconds(site.SessionExpirationInSeconds),
-                    User = user
-                };
-                context.Sessions.Add(session); 
-                context.SaveChanges();
-                return session;
-            }
+            //using (var context = new AuctionSiteContext(site.ConnectionString))
+            //{
+            //    var session = new Session
+            //    {
+            //        Id = CreateSessionId(site, user),
+            //        ValidUntil = site.AlarmClock.Now.AddSeconds(site.SessionExpirationInSeconds),
+            //        User = user
+            //    };
+            //    context.Sessions.Add(session); 
+            //    context.SaveChanges();
+            //    return session;
+            //}
+            return new Session();
         }
 
         public static string CreateSessionId(Site site, User user)
