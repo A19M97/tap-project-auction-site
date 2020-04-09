@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Mugnai
 {
@@ -6,6 +7,7 @@ namespace Mugnai
     {
         public string Id { get; set; }
 
+        [Required]
         public DateTime ValidUntil { get; set; }
 
     }

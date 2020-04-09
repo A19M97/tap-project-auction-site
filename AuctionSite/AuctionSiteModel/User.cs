@@ -9,11 +9,13 @@ namespace Mugnai
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int UserID { get; set; }
 
-        [MinLength(DomainConstraints.MinUserName)]
+        [MinLength(DomainConstraints.MinUserName), MaxLength(DomainConstraints.MaxUserName), Index("IX_UserUnique", 1, IsUnique = true), Required]
         public string Username { get; set; }
 
+        [Required]
         public string Password { get; set; }
 
+        [MinLength(DomainConstraints.MinSiteName), MaxLength(DomainConstraints.MaxSiteName), Index("IX_UserUnique", 2, IsUnique = true), Required]
         public string SiteName { get; set; }
 
         [ForeignKey("SiteName")]

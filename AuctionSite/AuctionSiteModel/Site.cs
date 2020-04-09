@@ -9,13 +9,13 @@ namespace Mugnai
         [Key, MinLength(DomainConstraints.MinSiteName), MaxLength(DomainConstraints.MaxSiteName)]
         public string Name { get; set; }
 
-        [Range(DomainConstraints.MinTimeZone, DomainConstraints.MaxTimeZone)]
+        [Range(DomainConstraints.MinTimeZone, DomainConstraints.MaxTimeZone), Required]
         public int Timezone { get; set; }
 
-        [Range(1, int.MaxValue)]
+        [Range(1, int.MaxValue), Required]
         public int SessionExpirationInSeconds { get; set; }
 
-        [Range(0, double.MaxValue)]
+        [Range(0, double.MaxValue), Required]
         public double MinimumBidIncrement { get; set; }
 
         public virtual ICollection<User> Users { get; set; }
