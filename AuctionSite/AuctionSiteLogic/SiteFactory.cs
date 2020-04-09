@@ -12,7 +12,20 @@ namespace Mugnai
     {
         public void Setup(string connectionString)
         {
-            throw new NotImplementedException();
+            if (null == connectionString)
+                throw new ArgumentNullException();
+            using (var context = new AuctionSiteContext(connectionString))
+            {
+                context.Database.Delete();
+                try
+                {
+                    context.Database.Create();
+                }
+                catch (SqlException e)
+                {
+                    throw new UnavailableDbException("Database connection error.", e);
+                }
+            }
         }
 
         public IEnumerable<string> GetSiteNames(string connectionString)
