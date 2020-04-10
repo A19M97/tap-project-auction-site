@@ -71,9 +71,9 @@
     <Compile Include="_aux\_debug\FormattedDbEntityValidationException.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AuctionSiteModel\AuctionSiteModel.csproj">
+    <ProjectReference Include="..\AuctionSiteModel\AuctionSiteDAL.csproj">
       <Project>{82f05941-59c3-4673-82c1-9e1cfd593426}</Project>
-      <Name>AuctionSiteModel</Name>
+      <Name>AuctionSiteDAL</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

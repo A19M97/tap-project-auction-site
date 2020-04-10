@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29911.84
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuctionSiteLogic.Tests", "AuctionSite.Tests\AuctionSiteLogic.Tests.csproj", "{19E8E0B1-07C2-4D3A-BCC6-374BB18D4050}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuctionSiteBLL.Tests", "AuctionSite.Tests\AuctionSiteBLL.Tests.csproj", "{19E8E0B1-07C2-4D3A-BCC6-374BB18D4050}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuctionSiteModel", "AuctionSiteModel\AuctionSiteModel.csproj", "{82F05941-59C3-4673-82C1-9E1CFD593426}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuctionSiteDAL", "AuctionSiteModel\AuctionSiteDAL.csproj", "{82F05941-59C3-4673-82C1-9E1CFD593426}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuctionSiteBLL", "AuctionSiteLogic\AuctionSiteBLL.csproj", "{5607B0AC-41F7-4C7A-B296-6F189230EFE5}"
 EndProject
