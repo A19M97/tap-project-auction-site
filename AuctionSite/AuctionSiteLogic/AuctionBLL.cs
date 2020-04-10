@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TAP2018_19.AuctionSite.Interfaces;
 
-namespace AuctionSiteLogic
+namespace Mugnai
 {
     class AuctionBLL : IAuction
     {

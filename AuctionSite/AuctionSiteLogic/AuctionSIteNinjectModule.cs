@@ -1,6 +1,5 @@
 ﻿using System.Data.Entity;
 using System.Security;
-using AuctionSiteLogic;
 using Ninject.Modules;
 using TAP2018_19.AuctionSite.Interfaces;
 

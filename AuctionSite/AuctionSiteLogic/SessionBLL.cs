@@ -1,7 +1,7 @@
 ﻿using System;
 using TAP2018_19.AuctionSite.Interfaces;
 
-namespace AuctionSiteLogic
+namespace Mugnai
 {
     public class SessionBLL : ISession
     {
