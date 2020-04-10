@@ -16,9 +16,9 @@ namespace Mugnai
                 throw new ArgumentNullException();
             using (var context = new AuctionSiteContext(connectionString))
             {
-                context.Database.Delete();
                 try
                 {
+                    context.Database.Delete();
                     context.Database.Create();
                 }
                 catch (SqlException e)
