@@ -1,14 +1,32 @@
 ﻿using System.Collections.Generic;
+using TAP2018_19.AlarmClock.Interfaces;
 using TAP2018_19.AuctionSite.Interfaces;
 
 namespace Mugnai
 {
-    public class SiteLogic : ISite
+    public class SiteBLL : ISite
     {
         public string Name { get; }
         public int Timezone { get; }
         public int SessionExpirationInSeconds { get; }
         public double MinimumBidIncrement { get; }
+        public IAlarmClock AlarmClock { get; }
+        public IAlarm Alarm { get; }
+
+
+        public SiteBLL(Site site, IAlarmClock alarmClock)
+        {
+            Name = site.Name;
+            Timezone = site.Timezone;
+            SessionExpirationInSeconds = site.SessionExpirationInSeconds;
+            MinimumBidIncrement = site.MinimumBidIncrement;
+            AlarmClock = alarmClock;
+            Alarm = AlarmClock.InstantiateAlarm(5 * 60 * 1000); /* 5*60*1000 = 300000 = 5 minutes */
+            Alarm.RingingEvent += CleanupSessions;
+        }
+
+        
+
         public IEnumerable<IUser> GetUsers()
         {
             throw new System.NotImplementedException();
@@ -48,5 +66,10 @@ namespace Mugnai
         {
             throw new System.NotImplementedException();
         }
+
+
+        /* AUX METHODS */
+        
+        /* END AUX METHODS */
     }
 }
