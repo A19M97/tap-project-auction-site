@@ -15,7 +15,7 @@ namespace Mugnai
         {
             Database.SetInitializer<AuctionSiteContext>(null);
             this.Bind<ISiteFactory>().To<SiteFactory> ();
-            this.Bind<ISite>().To<SiteLogic>();
+            this.Bind<ISite>().To<SiteBLL>();
             this.Bind<ISession>().To<SessionBLL>();
             this.Bind<IUser>().To<UserBLL>();
             this.Bind<IAuction>().To<AuctionBLL>();
