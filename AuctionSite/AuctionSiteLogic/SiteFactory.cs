@@ -83,7 +83,24 @@ namespace Mugnai
 
         public int GetTheTimezoneOf(string connectionString, string name)
         {
-            throw new NotImplementedException();
+            if (null == connectionString || null == name)
+                throw new ArgumentNullException();
+            if (!IsValidSiteName(name))
+                throw new ArgumentException();
+            using (var context = new AuctionSiteContext(connectionString))
+            {
+                if (!ExistsDb(context))
+                    throw new UnavailableDbException();
+                var site =
+                    (from siteDb in context.Sites
+                        where siteDb.Name == name
+                        select siteDb).FirstOrDefault();
+
+                if (null == site)
+                    throw new InexistentNameException(name);
+
+                return site.Timezone;
+            }
         }
 
         /* AUX METHODS*/
