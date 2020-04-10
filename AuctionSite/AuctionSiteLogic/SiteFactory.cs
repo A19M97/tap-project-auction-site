@@ -30,7 +30,16 @@ namespace Mugnai
 
         public IEnumerable<string> GetSiteNames(string connectionString)
         {
-            throw new NotImplementedException();
+            if (null == connectionString)
+                throw new ArgumentNullException();
+            using (var context = new AuctionSiteContext(connectionString))
+            {
+                if (!ExistsDb(context))
+                    throw new UnavailableDbException();
+                return (
+                    from site in context.Sites
+                    select site.Name).ToList();
+            }
         }
 
         public void CreateSiteOnDb(string connectionString, string name, int timezone, int sessionExpirationTimeInSeconds,
