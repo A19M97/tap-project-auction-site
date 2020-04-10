@@ -7,7 +7,7 @@ using TAP2018_19.AuctionSite.Interfaces;
 
 namespace AuctionSiteLogic
 {
-    class AuctionLogic : IAuction
+    class AuctionBLL : IAuction
     {
         public int Id { get; }
         public IUser Seller { get; }

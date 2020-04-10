@@ -3,7 +3,7 @@ using TAP2018_19.AuctionSite.Interfaces;
 
 namespace AuctionSiteLogic
 {
-    public class SessionLogic : ISession
+    public class SessionBLL : ISession
     {
         public string Id { get; }
         public DateTime ValidUntil { get; }

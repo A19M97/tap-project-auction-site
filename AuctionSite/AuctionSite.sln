@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuctionSiteLogic.Tests", "A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuctionSiteModel", "AuctionSiteModel\AuctionSiteModel.csproj", "{82F05941-59C3-4673-82C1-9E1CFD593426}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuctionSiteLogic", "AuctionSiteLogic\AuctionSiteLogic.csproj", "{5607B0AC-41F7-4C7A-B296-6F189230EFE5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuctionSiteBLL", "AuctionSiteLogic\AuctionSiteBLL.csproj", "{5607B0AC-41F7-4C7A-B296-6F189230EFE5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
