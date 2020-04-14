@@ -109,7 +109,17 @@ namespace Mugnai
 
         public void Delete()
         {
-            throw new System.NotImplementedException();
+            if (Utils.IsSiteDisposed(this))
+                throw new InvalidOperationException();
+            DeleteUsers();
+            DeleteAuctions();
+            using (var context = new AuctionSiteContext(ConnectionString))
+            {
+                var site = context.Sites.Find(this.Name);
+                context.Entry(site).State = EntityState.Deleted;
+                context.SaveChanges();
+            }
+            IsDeleted = true;
         }
 
         public void CleanupSessions()
@@ -171,6 +181,18 @@ namespace Mugnai
                     user.Session = Utils.CreateNewSession(this, user);
                 return user.Session;
             }
+        }
+
+        private void DeleteAuctions()
+        {
+            foreach (var auction in GetAuctions(false))
+                auction.Delete();
+        }
+
+        private void DeleteUsers()
+        {
+            foreach (var user in GetUsers())
+                user.Delete();
         }
 
         /* END AUX METHODS */
