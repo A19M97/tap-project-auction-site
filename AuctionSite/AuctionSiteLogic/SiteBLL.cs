@@ -33,7 +33,6 @@ namespace Mugnai
             this.ConnectionString = connectionString;
         }
 
-        
 
         public IEnumerable<IUser> GetUsers()
         {
@@ -52,7 +51,19 @@ namespace Mugnai
 
         public IEnumerable<ISession> GetSessions()
         {
-            throw new System.NotImplementedException();
+            if (Utils.IsSiteDisposed(this))
+                throw new InvalidOperationException();
+            var sessions = new List<SessionBLL>();
+            foreach (var iUser in GetUsers())
+            {
+                var user = iUser as UserBLL;
+                if (user?.Session != null)
+                {
+                    //user.Session.User = user;
+                    sessions.Add(user.Session);
+                }
+            }
+            return sessions;
         }
 
         public IEnumerable<IAuction> GetAuctions(bool onlyNotEnded)

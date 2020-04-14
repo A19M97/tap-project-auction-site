@@ -17,6 +17,15 @@ namespace Mugnai
             User = user;
         }
 
+        public override bool Equals(object obj)
+        {
+            if (null == obj) return false;
+            if (!(obj is ISession)) return false;
+            return ((ISession) obj).Id == this.Id;
+        }
+
+        public override int GetHashCode() => Id.GetHashCode();
+
         public bool IsValid()
         {
             throw new NotImplementedException();
