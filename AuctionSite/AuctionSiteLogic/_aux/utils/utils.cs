@@ -25,25 +25,22 @@ namespace Mugnai._aux.utils
 
         internal static SessionBLL CreateNewSession(SiteBLL site, UserBLL user)
         {
-            //using (var context = new AuctionSiteContext(site.ConnectionString))
-            //{
-            //    var session = new Session
-            //    {
-            //        Id = CreateSessionId(site, user),
-            //        ValidUntil = site.AlarmClock.Now.AddSeconds(site.SessionExpirationInSeconds),
-            //        User = user
-            //    };
-            //    context.Sessions.Add(session); 
-            //    context.SaveChanges();
-            //    return session;
-            //}
-            throw new NotImplementedException();
+            using (var context = new AuctionSiteContext(site.ConnectionString))
+            {
+                var session = new Session
+                {
+                    Id = CreateSessionId(site, user),
+                    ValidUntil = site.AlarmClock.Now.AddSeconds(site.SessionExpirationInSeconds),
+                };
+                context.Sessions.Add(session);
+                context.SaveChanges();
+                return new SessionBLL(session, user);
+            }
         }
 
         public static string CreateSessionId(SiteBLL site, UserBLL user)
         {
-            throw new NotImplementedException();
-            /*return site.Name + user.UserID;*/
+            return site.Name + user.UserID;
         }
 
         public static bool IsValidUsername(string username)

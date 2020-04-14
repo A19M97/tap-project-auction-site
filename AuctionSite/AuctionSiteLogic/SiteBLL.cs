@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using Mugnai._aux.utils;
 using Mugnai.Model;
@@ -61,7 +62,31 @@ namespace Mugnai
 
         public ISession Login(string username, string password)
         {
-            throw new System.NotImplementedException();
+            if (Utils.IsSiteDisposed(this))
+                throw new InvalidOperationException();
+            if (null == username || null == password)
+                throw new ArgumentNullException();
+            if (!Utils.IsValidUsername(username) || !Utils.IsValidPassword(password))
+                throw new ArgumentException();
+
+            var user = GetUserByUsername(username);
+            if (null == user)
+                return null;
+
+            if (!Utils.ArePasswordsEquals(user.Password, password))
+                return null;
+
+            var userSession = GetUserSession(user);
+            //user.Session = userSession;
+            using (var context = new AuctionSiteContext(ConnectionString))
+            {
+                var dbUser = context.Users.Find(user.UserID);
+                dbUser.SessionId = userSession.Id;
+                context.Entry(dbUser).State = EntityState.Modified;
+                context.SaveChanges();
+            }
+
+            return userSession;
         }
 
         public ISession GetSession(string sessionId)
@@ -118,6 +143,33 @@ namespace Mugnai
                 };
                 context.Users.Add(user);
                 context.SaveChanges();
+            }
+        }
+
+        private UserBLL GetUserByUsername(string username)
+        {
+            foreach (var user in GetUsers())
+            {
+                if (user.Username == username)
+                    return user as UserBLL;
+            }
+            return null;
+        }
+
+        private SessionBLL GetUserSession(UserBLL user)
+        {
+            using (var context = new AuctionSiteContext(ConnectionString))
+            {
+                var session = context.Sessions.Find(Utils.CreateSessionId(this, user));
+                if(null == session)
+                {
+                    user.Session = Utils.CreateNewSession(this, user);
+                    return user.Session;
+                }
+                var sessionBLL = new SessionBLL(session, user);
+                if (!sessionBLL.IsValid())
+                    user.Session = Utils.CreateNewSession(this, user);
+                return user.Session;
             }
         }
 
