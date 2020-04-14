@@ -130,16 +130,15 @@ namespace Mugnai
                 throw new ArgumentNullException();
             if ("" == sessionId)
                 return null;
-            Session session;
-            using (var context = new AuctionSiteContext(ConnectionString))
+
+            foreach (var user in GetUsers())
             {
-                session = context.Sessions.Find(sessionId);
-            }
-            if (null == session)
+                var userBLL = (UserBLL) user;
+                if (userBLL.Session == null || userBLL.Session.Id != sessionId) continue;
+                if (userBLL.Session.IsValid())
+                    return userBLL.Session;
                 return null;
-            var sessionBLL = new SessionBLL(session);
-            if (sessionBLL.IsValid())
-                return sessionBLL;
+            }
             return null;
         }
 
