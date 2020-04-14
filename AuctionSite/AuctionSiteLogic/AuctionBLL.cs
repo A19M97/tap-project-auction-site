@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Mugnai.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,14 @@ namespace Mugnai
         public IUser Seller { get; }
         public string Description { get; }
         public DateTime EndsOn { get; }
+
+        public AuctionBLL(Auction auction)
+        {
+            Id = auction.Id;
+            Description = auction.Description;
+            EndsOn = auction.EndsOn;
+        }
+
         public IUser CurrentWinner()
         {
             throw new NotImplementedException();

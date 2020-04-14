@@ -49,6 +49,11 @@ namespace Mugnai._aux.utils
             return usernameLength >= DomainConstraints.MinUserName && usernameLength <= DomainConstraints.MaxUserName;
         }
 
+        public static bool IsValidPassword(string password)
+        {
+            return password.Length >= DomainConstraints.MinUserPassword;
+        }
+
         internal static IEnumerable<IUser> UsersToUsersBLL(List<User> users)
         {
             var usersBLL = new List<UserBLL>();
@@ -58,9 +63,12 @@ namespace Mugnai._aux.utils
 
         }
 
-        public static bool IsValidPassword(string password)
+        internal static IEnumerable<IAuction> AuctionsToAuctionsBLL(List<Auction> auctions)
         {
-            return password.Length >= DomainConstraints.MinUserPassword;
+            var auctionsBLL = new List<AuctionBLL>();
+            foreach (var auction in auctions)
+                auctionsBLL.Add(new AuctionBLL(auction));
+            return auctionsBLL;
         }
     }
 }

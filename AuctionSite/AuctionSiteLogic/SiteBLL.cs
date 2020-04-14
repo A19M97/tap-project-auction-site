@@ -68,7 +68,29 @@ namespace Mugnai
 
         public IEnumerable<IAuction> GetAuctions(bool onlyNotEnded)
         {
-            throw new System.NotImplementedException();
+            if (Utils.IsSiteDisposed(this))
+                throw new InvalidOperationException();
+            using (var context = new AuctionSiteContext(ConnectionString))
+            {
+                List<Auction> auctions;
+                if (!onlyNotEnded)
+                {
+                    auctions = (
+                        from auction in context.Auctions
+                        where auction.SiteName == Name
+                        select auction
+                    ).ToList();
+                }
+                else
+                {
+                    auctions = (
+                        from auction in context.Auctions
+                        where auction.SiteName == Name && auction.EndsOn > AlarmClock.Now
+                        select auction
+                    ).ToList();
+                }
+                return Utils.AuctionsToAuctionsBLL(auctions);
+            }
         }
 
         public ISession Login(string username, string password)
