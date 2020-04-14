@@ -13,7 +13,8 @@ namespace Mugnai
         public UserBLL(User user)
         {
             Username = user.Username;
-            Session = new SessionBLL(user.Session, this);
+            if (null != user.Session)
+                Session = new SessionBLL(user.Session, this);
         }
         public IEnumerable<IAuction> WonAuctions()
         {

@@ -71,7 +71,15 @@ namespace Mugnai
 
         public void CreateUser(string username, string password)
         {
-            throw new System.NotImplementedException();
+            if (Utils.IsSiteDisposed(this))
+                throw new InvalidOperationException();
+            if (null == username || null == password)
+                throw new ArgumentNullException();
+            if (!Utils.IsValidUsername(username) || !Utils.IsValidPassword(password))
+                throw new ArgumentException();
+            if (IsUsernameAlreadyUsedInSite(username))
+                throw new NameAlreadyInUseException("Username already used: " + username);
+            AddUser(username, password);
         }
 
         public void Delete()
@@ -86,7 +94,33 @@ namespace Mugnai
 
 
         /* AUX METHODS */
-        
+        private bool IsUsernameAlreadyUsedInSite(string username)
+        {
+            var users = GetUsers();
+            if (null == users)
+                return false;
+            foreach (var user in users)
+                if (user.Username == username)
+                    return true;
+            return false;
+        }
+
+        private void AddUser(string username, string password)
+        {
+            User user;
+            using (var context = new AuctionSiteContext(ConnectionString))
+            {
+                user = new User()
+                {
+                    Username = username,
+                    Password = password,
+                    SiteName = Name
+                };
+                context.Users.Add(user);
+                context.SaveChanges();
+            }
+        }
+
         /* END AUX METHODS */
     }
 }
