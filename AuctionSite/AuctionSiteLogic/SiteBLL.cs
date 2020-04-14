@@ -173,7 +173,19 @@ namespace Mugnai
 
         public void CleanupSessions()
         {
-            throw new System.NotImplementedException();
+            if (Utils.IsSiteDisposed(this))
+                throw new InvalidOperationException();
+            using (var context = new AuctionSiteContext(ConnectionString))
+            {
+                var sessions = (
+                    from session in context.Sessions
+                    select session
+                );
+                foreach (var session in sessions)
+                    if(!new SessionBLL(session).IsValid())
+                        context.Entry(session).State = EntityState.Deleted;
+                context.SaveChanges();
+            }
         }
 
 
