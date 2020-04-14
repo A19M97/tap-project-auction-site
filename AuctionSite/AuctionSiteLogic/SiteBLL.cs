@@ -124,7 +124,23 @@ namespace Mugnai
 
         public ISession GetSession(string sessionId)
         {
-            throw new System.NotImplementedException();
+            if (Utils.IsSiteDisposed(this))
+                throw new InvalidOperationException();
+            if (null == sessionId)
+                throw new ArgumentNullException();
+            if ("" == sessionId)
+                return null;
+            Session session;
+            using (var context = new AuctionSiteContext(ConnectionString))
+            {
+                session = context.Sessions.Find(sessionId);
+            }
+            if (null == session)
+                return null;
+            var sessionBLL = new SessionBLL(session);
+            if (sessionBLL.IsValid())
+                return sessionBLL;
+            return null;
         }
 
         public void CreateUser(string username, string password)

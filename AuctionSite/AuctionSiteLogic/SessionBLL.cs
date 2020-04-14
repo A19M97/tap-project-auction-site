@@ -10,6 +10,12 @@ namespace Mugnai
         public DateTime ValidUntil { get; }
         public IUser User { get; }
 
+        public SessionBLL(Session session)
+        {
+            Id = session.Id;
+            ValidUntil = session.ValidUntil;
+        }
+
         public SessionBLL(Session session, IUser user)
         {
             Id = session.Id;
