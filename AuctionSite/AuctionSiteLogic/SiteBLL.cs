@@ -13,9 +13,9 @@ namespace Mugnai
         public double MinimumBidIncrement { get; }
         public IAlarmClock AlarmClock { get; }
         public IAlarm Alarm { get; }
+        public string ConnectionString { get; private set; }
 
-
-        public SiteBLL(Site site, IAlarmClock alarmClock)
+        public SiteBLL(Site site, IAlarmClock alarmClock, string connectionString)
         {
             Name = site.Name;
             Timezone = site.Timezone;
@@ -24,6 +24,8 @@ namespace Mugnai
             AlarmClock = alarmClock;
             Alarm = AlarmClock.InstantiateAlarm(5 * 60 * 1000); /* 5*60*1000 = 300000 = 5 minutes */
             Alarm.RingingEvent += CleanupSessions;
+            this.ConnectionString = connectionString;
+
         }
 
         

@@ -97,10 +97,7 @@ namespace Mugnai
                     throw new InexistentNameException(name);
                 if (site.Timezone != alarmClock.Timezone)
                     throw new ArgumentException();
-                
-                //site.ConnectionString = connectionString;
-
-                return new SiteBLL(site, alarmClock);
+                return new SiteBLL(site, alarmClock, connectionString);
             }
         }
 
