@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Mugnai
+namespace Mugnai.Model
 {
     public class Session
     {

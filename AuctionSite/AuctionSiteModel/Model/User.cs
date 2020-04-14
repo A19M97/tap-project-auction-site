@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using TAP2018_19.AuctionSite.Interfaces;
 
-namespace Mugnai
+namespace Mugnai.Model
 {
     public class User
     {

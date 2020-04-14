@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Mugnai.Model;
 using TAP2018_19.AlarmClock.Interfaces;
 using TAP2018_19.AuctionSite.Interfaces;
 

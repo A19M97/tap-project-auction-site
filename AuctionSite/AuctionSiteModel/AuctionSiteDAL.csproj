@@ -60,17 +60,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Auction.cs" />
+    <Compile Include="Model\Auction.cs" />
     <Compile Include="AuctionSiteContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Session.cs" />
-    <Compile Include="Site.cs" />
-    <Compile Include="User.cs" />
+    <Compile Include="Model\Session.cs" />
+    <Compile Include="Model\Site.cs" />
+    <Compile Include="Model\User.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
