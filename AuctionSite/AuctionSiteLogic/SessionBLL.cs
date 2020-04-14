@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Mugnai.Model;
+using System;
 using TAP2018_19.AuctionSite.Interfaces;
 
 namespace Mugnai
@@ -8,6 +9,14 @@ namespace Mugnai
         public string Id { get; }
         public DateTime ValidUntil { get; }
         public IUser User { get; }
+
+        public SessionBLL(Session session, IUser user)
+        {
+            Id = session.Id;
+            ValidUntil = session.ValidUntil;
+            User = user;
+        }
+
         public bool IsValid()
         {
             throw new NotImplementedException();

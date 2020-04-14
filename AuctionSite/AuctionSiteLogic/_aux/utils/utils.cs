@@ -1,4 +1,7 @@
-﻿using System.Linq;
+﻿using Mugnai.Model;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using TAP2018_19.AuctionSite.Interfaces;
 
 namespace Mugnai._aux.utils
@@ -10,10 +13,9 @@ namespace Mugnai._aux.utils
             return context.Sites.Any(site => site.Name == name);
         }
 
-        public static bool IsSiteDisposed(Site site)
+        public static bool IsSiteDisposed(SiteBLL site)
         {
-            return true;
-            /*return site.IsDeleted;*/
+            return site.IsDeleted;
         }
 
         internal static bool ArePasswordsEquals(string password1, string password2)
@@ -21,7 +23,7 @@ namespace Mugnai._aux.utils
             return password1 == password2;
         }
 
-        internal static Session CreateNewSession(Site site, User user)
+        internal static SessionBLL CreateNewSession(SiteBLL site, UserBLL user)
         {
             //using (var context = new AuctionSiteContext(site.ConnectionString))
             //{
@@ -35,18 +37,28 @@ namespace Mugnai._aux.utils
             //    context.SaveChanges();
             //    return session;
             //}
-            return new Session();
+            throw new NotImplementedException();
         }
 
-        public static string CreateSessionId(Site site, User user)
+        public static string CreateSessionId(SiteBLL site, UserBLL user)
         {
-            return site.Name + user.UserID;
+            throw new NotImplementedException();
+            /*return site.Name + user.UserID;*/
         }
 
         public static bool IsValidUsername(string username)
         {
             var usernameLength = username.Length;
             return usernameLength >= DomainConstraints.MinUserName && usernameLength <= DomainConstraints.MaxUserName;
+        }
+
+        internal static IEnumerable<IUser> UsersToUsersBLL(List<User> users)
+        {
+            var usersBLL = new List<UserBLL>();
+            foreach (var user in users)
+                usersBLL.Add(new UserBLL(user));
+            return usersBLL;
+
         }
 
         public static bool IsValidPassword(string password)

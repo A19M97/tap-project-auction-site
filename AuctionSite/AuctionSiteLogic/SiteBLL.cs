@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Mugnai._aux.utils;
 using Mugnai.Model;
 using TAP2018_19.AlarmClock.Interfaces;
 using TAP2018_19.AuctionSite.Interfaces;
@@ -13,7 +16,9 @@ namespace Mugnai
         public double MinimumBidIncrement { get; }
         public IAlarmClock AlarmClock { get; }
         public IAlarm Alarm { get; }
-        public string ConnectionString { get; private set; }
+        public string ConnectionString { get; }
+
+        public bool IsDeleted;
 
         public SiteBLL(Site site, IAlarmClock alarmClock, string connectionString)
         {
@@ -25,14 +30,23 @@ namespace Mugnai
             Alarm = AlarmClock.InstantiateAlarm(5 * 60 * 1000); /* 5*60*1000 = 300000 = 5 minutes */
             Alarm.RingingEvent += CleanupSessions;
             this.ConnectionString = connectionString;
-
         }
 
         
 
         public IEnumerable<IUser> GetUsers()
         {
-            throw new System.NotImplementedException();
+            if (Utils.IsSiteDisposed(this))
+                throw new InvalidOperationException();
+            using (var context = new AuctionSiteContext(ConnectionString))
+            {
+                var users =
+                        (from user in context.Users.Include("Session")
+                        where user.SiteName == Name
+                        select user).ToList();
+                
+                return Utils.UsersToUsersBLL(users);
+            }
         }
 
         public IEnumerable<ISession> GetSessions()
