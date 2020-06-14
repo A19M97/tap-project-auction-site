@@ -1,5 +1,6 @@
 ﻿using Mugnai.Model;
 using System;
+using System.Data.Entity;
 using System.Linq;
 using Mugnai._aux.utils;
 using TAP2018_19.AlarmClock.Interfaces;
@@ -61,7 +62,20 @@ namespace Mugnai
 
         public void Logout()
         {
-            throw new NotImplementedException();
+            if (IsLoggedOut()) throw new InvalidOperationException();
+
+            var userBLL = User as UserBLL;
+            using (var context = new AuctionSiteContext(userBLL.Site.ConnectionString))
+            {
+                var session = context.Sessions.Find(Id);
+                if (null == session)
+                    throw new InvalidOperationException();
+                context.Users.Where(u => u.UserID == userBLL.UserID).Load();
+                context.Sessions.Remove(session);
+                context.SaveChanges();
+            }
+
+            LoggedOut = true;
         }
 
         public IAuction CreateAuction(string description, DateTime endsOn, double startingPrice)
