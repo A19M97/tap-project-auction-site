@@ -45,7 +45,7 @@ namespace Mugnai
                         where user.SiteName == Name
                         select user).ToList();
                 
-                return Utils.UsersToUsersBLL(users);
+                return Utils.UsersToUsersBLL(users, this);
             }
         }
 
@@ -89,7 +89,7 @@ namespace Mugnai
                         select auction
                     ).ToList();
                 }
-                return Utils.AuctionsToAuctionsBLL(auctions);
+                return Utils.AuctionsToAuctionsBLL(auctions, this);
             }
         }
 

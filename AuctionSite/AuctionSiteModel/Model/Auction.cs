@@ -7,6 +7,7 @@ namespace Mugnai.Model
 {
     public class Auction
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [Required]
@@ -18,7 +19,12 @@ namespace Mugnai.Model
         [MinLength(DomainConstraints.MinSiteName), MaxLength(DomainConstraints.MaxSiteName), Required]
         public string SiteName { get; set; }
 
-        [ForeignKey("SiteName")]
+        [ForeignKey("SiteName"), ]
         public Site Site { get; set; }
+
+        public int UserID { get; set; }
+
+        [ForeignKey("UserID")]
+        public virtual User User { get; set; }
     }
 }

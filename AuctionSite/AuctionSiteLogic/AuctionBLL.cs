@@ -15,12 +15,22 @@ namespace Mugnai
         public string Description { get; }
         public DateTime EndsOn { get; }
 
-        public AuctionBLL(Auction auction)
+        public AuctionBLL(Auction auction, IUser seller)
         {
             Id = auction.Id;
+            Seller = seller;
             Description = auction.Description;
             EndsOn = auction.EndsOn;
         }
+
+        public override bool Equals(object obj)
+        {
+            if (null == obj) return false;
+            if (!(obj is IAuction)) return false;
+            return ((IAuction)obj).Id == Id;
+        }
+
+        public override int GetHashCode() => Id.GetHashCode();
 
         public IUser CurrentWinner()
         {

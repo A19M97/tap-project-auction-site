@@ -38,6 +38,11 @@ namespace Mugnai._aux.utils
             }
         }
 
+        internal static bool IsSessionDisposed(SessionBLL sessionBLL)
+        {
+            return sessionBLL.IsDeleted;
+        }
+
         public static string CreateSessionId(SiteBLL site, UserBLL user)
         {
             return site.Name + user.UserID;
@@ -54,20 +59,20 @@ namespace Mugnai._aux.utils
             return password.Length >= DomainConstraints.MinUserPassword;
         }
 
-        internal static IEnumerable<IUser> UsersToUsersBLL(List<User> users)
+        internal static IEnumerable<IUser> UsersToUsersBLL(List<User> users, SiteBLL site)
         {
             var usersBLL = new List<UserBLL>();
             foreach (var user in users)
-                usersBLL.Add(new UserBLL(user));
+                usersBLL.Add(new UserBLL(user, site));
             return usersBLL;
 
         }
 
-        internal static IEnumerable<IAuction> AuctionsToAuctionsBLL(List<Auction> auctions)
+        internal static IEnumerable<IAuction> AuctionsToAuctionsBLL(List<Auction> auctions, ISite site)
         {
             var auctionsBLL = new List<AuctionBLL>();
             foreach (var auction in auctions)
-                auctionsBLL.Add(new AuctionBLL(auction));
+                auctionsBLL.Add(new AuctionBLL(auction, new UserBLL(auction.User, site as SiteBLL)));
             return auctionsBLL;
         }
     }

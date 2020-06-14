@@ -8,16 +8,16 @@ namespace Mugnai
     {
         public int UserID { get; }
         public string Username { get; }
-
         public string Password { get; }
-
+        public SiteBLL Site { get; }
         public SessionBLL Session { get; set; }
 
-        public UserBLL(User user)
+        public UserBLL(User user, SiteBLL site)
         {
             UserID = user.UserID;
             Username = user.Username;
             Password = user.Password;
+            Site = site;
             if (null != user.Session)
                 Session = new SessionBLL(user.Session, this);
         }

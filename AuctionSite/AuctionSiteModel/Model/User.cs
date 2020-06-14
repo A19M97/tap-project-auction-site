@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using TAP2018_19.AuctionSite.Interfaces;
 
@@ -9,13 +10,13 @@ namespace Mugnai.Model
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int UserID { get; set; }
 
-        [MinLength(DomainConstraints.MinUserName), MaxLength(DomainConstraints.MaxUserName), Index("IX_UserUnique", 1, IsUnique = true), Required]
+        [MinLength(DomainConstraints.MinUserName), MaxLength(DomainConstraints.MaxUserName)]
         public string Username { get; set; }
 
         [Required]
         public string Password { get; set; }
 
-        [MinLength(DomainConstraints.MinSiteName), MaxLength(DomainConstraints.MaxSiteName), Index("IX_UserUnique", 2, IsUnique = true), Required]
+        [MinLength(DomainConstraints.MinSiteName), MaxLength(DomainConstraints.MaxSiteName)]
         public string SiteName { get; set; }
 
         [ForeignKey("SiteName")]
@@ -25,5 +26,7 @@ namespace Mugnai.Model
 
         [ForeignKey("SessionId")]
         public virtual Session Session { get; set; }
+
+        public virtual ICollection<Auction> Auctions { get; set; }
     }
 }
