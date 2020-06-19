@@ -59,7 +59,7 @@ namespace Mugnai._aux.utils
             return password.Length >= DomainConstraints.MinUserPassword;
         }
 
-        internal static IEnumerable<IUser> UsersToUsersBLL(List<User> users, SiteBLL site)
+        internal static IEnumerable<IUser> UsersToUsersBLL(List<User> users, ISite site)
         {
             var usersBLL = new List<UserBLL>();
             foreach (var user in users)
@@ -68,11 +68,17 @@ namespace Mugnai._aux.utils
 
         }
 
+        internal static IUser UserToUserBLL(User user, ISite site)
+        {
+            return new UserBLL(user, site);
+
+        }
+
         internal static IEnumerable<IAuction> AuctionsToAuctionsBLL(List<Auction> auctions, ISite site)
         {
             var auctionsBLL = new List<AuctionBLL>();
             foreach (var auction in auctions)
-                auctionsBLL.Add(new AuctionBLL(auction, new UserBLL(auction.User, site as SiteBLL)));
+                auctionsBLL.Add(new AuctionBLL(auction, new UserBLL(auction.Seller, site as SiteBLL)));
             return auctionsBLL;
         }
     }

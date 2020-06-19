@@ -12,12 +12,12 @@ namespace Mugnai
         public SiteBLL Site { get; }
         public SessionBLL Session { get; set; }
 
-        public UserBLL(User user, SiteBLL site)
+        public UserBLL(User user, ISite site)
         {
             UserID = user.UserID;
             Username = user.Username;
             Password = user.Password;
-            Site = site;
+            Site = site as SiteBLL;
             if (null != user.Session)
                 Session = new SessionBLL(user.Session, this);
         }

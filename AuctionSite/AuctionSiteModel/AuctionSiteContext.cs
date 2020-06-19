@@ -11,6 +11,13 @@ namespace Mugnai
         {
         }
 
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Auction>().
+                HasRequired(c => c.Seller)
+                .WithMany(u => u.CreatedAuctions)
+                .WillCascadeOnDelete(false);
+        }
         public DbSet<Site> Sites { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Auction> Auctions { get; set; }

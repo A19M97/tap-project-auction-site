@@ -27,6 +27,8 @@ namespace Mugnai.Model
         [ForeignKey("SessionId")]
         public virtual Session Session { get; set; }
 
-        public virtual ICollection<Auction> Auctions { get; set; }
+        public virtual ICollection<Auction> CreatedAuctions { get; set; }
+
+        public virtual ICollection<Auction> BidAuctions { get; set; }
     }
 }

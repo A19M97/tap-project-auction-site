@@ -22,9 +22,17 @@ namespace Mugnai.Model
         [ForeignKey("SiteName"), ]
         public Site Site { get; set; }
 
-        public int UserID { get; set; }
+        public int SellerId { get; set; }
 
-        [ForeignKey("UserID")]
-        public virtual User User { get; set; }
+        [ForeignKey("SellerId")]
+        public virtual User Seller { get; set; }
+
+        public int? CurrentWinnerId { get; set; }
+
+        [ForeignKey("CurrentWinnerId")]
+        public virtual User CurrentWinner { get; set; }
+
+        public double? LastBid { get; set; }
+        public double StartingPrice { get; set; }
     }
 }

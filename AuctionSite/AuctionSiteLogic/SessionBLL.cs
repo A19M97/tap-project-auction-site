@@ -100,7 +100,10 @@ namespace Mugnai
                     Description = description,
                     EndsOn = endsOn,
                     SiteName = userBLL.Site.Name,
-                    UserID = userBLL.UserID
+                    SellerId = userBLL.UserID,
+                    CurrentWinnerId = null,
+                    LastBid = null,
+                    StartingPrice = startingPrice
                 };
                 context.Auctions.Add(auction);
 
@@ -108,7 +111,7 @@ namespace Mugnai
                 if(null == session)
                     throw new InvalidOperationException();
                 session.ValidUntil = validUntil;
-                context.Entry(session).State = System.Data.Entity.EntityState.Modified;
+                context.Entry(session).State = EntityState.Modified;
                 context.SaveChanges();
             }
             ValidUntil = validUntil;
