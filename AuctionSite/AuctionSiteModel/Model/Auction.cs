@@ -34,5 +34,6 @@ namespace Mugnai.Model
 
         public double? LastBid { get; set; }
         public double StartingPrice { get; set; }
+        public double CurrentPrice { get; set; }
     }
 }

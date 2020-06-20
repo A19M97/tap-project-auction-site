@@ -46,13 +46,20 @@ namespace Mugnai
                 var currentWinner = auction.CurrentWinner;
                 if (null == currentWinner)
                     return null;
-                return Utils.UserToUserBLL(context.Users.Find(currentWinner), userBLL.Site);
+                return Utils.UserToUserBLL(currentWinner, userBLL.Site);
             }
         }
 
         public double CurrentPrice()
         {
-            throw new NotImplementedException();
+            var sellerBLL = Seller as UserBLL;
+            using (var context = new AuctionSiteContext(sellerBLL.Site.ConnectionString))
+            {
+                var auction = context.Auctions.Find(Id);
+                if(null == auction)
+                    throw new InvalidOperationException();
+                return auction.CurrentPrice;
+            }
         }
 
         public void Delete()
@@ -81,19 +88,50 @@ namespace Mugnai
                 var startingPrice = auction.StartingPrice;
                 if (offer < startingPrice)
                     return false;
-                if (null == lastBid && null == currentWinnerId) //--> is the first bid.
+                var isFirstBid = null == lastBid && null == currentWinnerId;
+                var bidderAlreadyWinning = currentWinnerId == ((UserBLL)session.User).UserID;
+                if (bidderAlreadyWinning)
+                    if (lastBid + minimumBidIncrement >= offer)
+                        return false;
+                if (offer < CurrentPrice())
+                    return false;
+                if (!isFirstBid && offer < CurrentPrice() + minimumBidIncrement)
+                    return false;
+                var sessionDb = context.Sessions.Find(session.Id);
+                if(null == sessionDb)
+                    throw new InvalidOperationException();
+                sessionDb.ValidUntil = sellerBLL.Site.AlarmClock.Now.AddSeconds(sellerBLL.Site.SessionExpirationInSeconds);
+                context.Entry(sessionDb).State = EntityState.Modified;
+                ((SessionBLL) session).ValidUntil = sellerBLL.Site.AlarmClock.Now.AddSeconds(sellerBLL.Site.SessionExpirationInSeconds);
+                if (isFirstBid)
                 {
-                    auction.LastBid = offer;
-                    auction.CurrentWinnerId = (session.User as UserBLL).UserID;
-                    context.Entry(auction).State = EntityState.Modified;
-                    context.SaveChanges();
+                    UpdateAuction(context, auction, session, offer, null);
                     return true;
                 }
-
-                if (lastBid + minimumBidIncrement >= offer) return false;
-
+                if (bidderAlreadyWinning)
+                {
+                    UpdateAuction(context, auction, null, offer, null);
+                    return true;
+                }
+                if(offer > lastBid)
+                {
+                    UpdateAuction(context, auction, session, offer, Math.Min(offer, (double)lastBid + minimumBidIncrement));
+                    return true;
+                }
+                UpdateAuction(context, auction, null, offer, Math.Min(offer + minimumBidIncrement, (double) lastBid));
                 return true;
             }
+        }
+
+        private static void UpdateAuction(AuctionSiteContext context, Auction auction, ISession session, double offer, double? currentPrice)
+        {
+            auction.LastBid = offer;
+            if(null != session)
+                auction.CurrentWinnerId = (session.User as UserBLL).UserID;
+            if (null != currentPrice)
+                auction.CurrentPrice = (double) currentPrice;
+            context.Entry(auction).State = EntityState.Modified;
+            context.SaveChanges();
         }
     }
 }

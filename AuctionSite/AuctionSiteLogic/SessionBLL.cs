@@ -103,7 +103,8 @@ namespace Mugnai
                     SellerId = userBLL.UserID,
                     CurrentWinnerId = null,
                     LastBid = null,
-                    StartingPrice = startingPrice
+                    StartingPrice = startingPrice,
+                    CurrentPrice = startingPrice
                 };
                 context.Auctions.Add(auction);
 
