@@ -38,7 +38,7 @@ namespace Mugnai._aux.utils
             }
         }
 
-        internal static bool IsSessionDisposed(SessionBLL sessionBLL)
+        public static bool IsSessionDisposed(SessionBLL sessionBLL)
         {
             return sessionBLL.IsDeleted;
         }
@@ -80,6 +80,11 @@ namespace Mugnai._aux.utils
             foreach (var auction in auctions)
                 auctionsBLL.Add(new AuctionBLL(auction, new UserBLL(auction.Seller, site as SiteBLL)));
             return auctionsBLL;
+        }
+
+        public static bool IsAuctionDisposed(AuctionBLL auctionBll)
+        {
+            return auctionBll.IsDeleted;
         }
     }
 }

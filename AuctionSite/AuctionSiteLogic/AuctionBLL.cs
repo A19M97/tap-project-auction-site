@@ -10,13 +10,14 @@ using TAP2018_19.AuctionSite.Interfaces;
 
 namespace Mugnai
 {
-    class AuctionBLL : IAuction
+    public class AuctionBLL : IAuction
     {
         public int Id { get; }
         public IUser Seller { get; }
         public string Description { get; }
         public DateTime EndsOn { get; }
-        
+        public bool IsDeleted = false;
+
 
         public AuctionBLL(Auction auction, IUser seller)
         {
@@ -37,6 +38,8 @@ namespace Mugnai
 
         public IUser CurrentWinner()
         {
+            if (Utils.IsAuctionDisposed(this))
+                throw new InvalidOperationException();
             var userBLL = Seller as UserBLL;
             using (var context = new AuctionSiteContext(userBLL.Site.ConnectionString))
             {
@@ -52,6 +55,8 @@ namespace Mugnai
 
         public double CurrentPrice()
         {
+            if (Utils.IsAuctionDisposed(this))
+                throw new InvalidOperationException();
             var sellerBLL = Seller as UserBLL;
             using (var context = new AuctionSiteContext(sellerBLL.Site.ConnectionString))
             {
@@ -64,12 +69,23 @@ namespace Mugnai
 
         public void Delete()
         {
-            throw new NotImplementedException();
+            if (Utils.IsAuctionDisposed(this))
+                throw new InvalidOperationException();
+            var sellerBLL = Seller as UserBLL;
+            using (var context = new AuctionSiteContext(sellerBLL.Site.ConnectionString))
+            {
+                var auction = context.Auctions.Find(Id);
+                context.Entry(auction).State = EntityState.Deleted;
+                context.SaveChanges();
+            }
+            IsDeleted = true;
         }
 
         public bool BidOnAuction(ISession session, double offer)
         {
-            if(null == session) 
+            if (Utils.IsAuctionDisposed(this))
+                throw new InvalidOperationException();
+            if (null == session) 
                 throw new ArgumentNullException();
             if(offer < 0) 
                 throw new ArgumentOutOfRangeException();
