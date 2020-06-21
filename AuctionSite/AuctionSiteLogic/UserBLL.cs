@@ -1,5 +1,8 @@
-﻿using Mugnai.Model;
+﻿using System;
+using Mugnai.Model;
 using System.Collections.Generic;
+using System.Data.Entity;
+using Mugnai._aux.utils;
 using TAP2018_19.AuctionSite.Interfaces;
 
 namespace Mugnai
@@ -11,6 +14,7 @@ namespace Mugnai
         public string Password { get; }
         public SiteBLL Site { get; }
         public SessionBLL Session { get; set; }
+        public bool IsDeleted = false;
 
         public UserBLL(User user, ISite site)
         {
@@ -33,12 +37,42 @@ namespace Mugnai
 
         public IEnumerable<IAuction> WonAuctions()
         {
-            throw new System.NotImplementedException();
+            if (Utils.IsUserDisposed(this))
+                throw new InvalidOperationException();
+            var wonAuctions = new List<IAuction>();
+            foreach (var auction in Site.GetEndedAuctions())
+            {
+                if(Equals(auction.CurrentWinner()))
+                    wonAuctions.Add(auction);
+            }
+            return wonAuctions;
         }
 
         public void Delete()
         {
-            throw new System.NotImplementedException();
+            if (Utils.IsUserDisposed(this))
+                throw new InvalidOperationException();
+            foreach (var auction in Site.GetAuctions(true))
+            {
+                if (Equals(auction.CurrentWinner()) || Equals(auction.Seller))
+                    throw new InvalidOperationException();
+            }
+            foreach (var auction in Site.GetEndedAuctions())
+            {
+                var auctionBLL = (AuctionBLL) auction;
+                if (Equals(auctionBLL.CurrentWinner()))
+                    auctionBLL.UpdateDeletedUser();
+                else if (Equals(auctionBLL.Seller))
+                    auctionBLL.Delete();
+            }
+
+            using (var context = new AuctionSiteContext(Site.ConnectionString))
+            {
+                var user = context.Users.Find(UserID);
+                context.Entry(user).State = EntityState.Deleted;
+                context.SaveChanges();
+            }
+            IsDeleted = true;
         }
     }
 }

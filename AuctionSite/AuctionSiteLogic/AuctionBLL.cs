@@ -149,5 +149,18 @@ namespace Mugnai
             context.Entry(auction).State = EntityState.Modified;
             context.SaveChanges();
         }
+
+        public void UpdateDeletedUser()
+        {
+            var sellerBLL = (UserBLL) Seller;
+            using (var context = new AuctionSiteContext(sellerBLL.Site.ConnectionString))
+            {
+                var auction = context.Auctions.Find(Id);
+                auction.CurrentWinner = null;
+                auction.CurrentWinnerId = null;
+                context.Entry(auction).State = EntityState.Modified;
+                context.SaveChanges();
+            }
+        }
     }
 }

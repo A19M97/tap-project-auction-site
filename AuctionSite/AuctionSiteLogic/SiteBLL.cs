@@ -272,6 +272,21 @@ namespace Mugnai
                 user.Delete();
         }
 
+        public IEnumerable<IAuction> GetEndedAuctions()
+        {
+            if (Utils.IsSiteDisposed(this))
+                throw new InvalidOperationException();
+            using (var context = new AuctionSiteContext(ConnectionString))
+            {
+                var auctions = (
+                    from auction in context.Auctions
+                    where auction.SiteName == Name && auction.EndsOn < AlarmClock.Now
+                    select auction
+                ).ToList();
+                return Utils.AuctionsToAuctionsBLL(auctions, this);
+            }
+        }
+
         /* END AUX METHODS */
     }
 }

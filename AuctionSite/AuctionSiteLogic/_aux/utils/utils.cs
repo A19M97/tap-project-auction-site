@@ -86,5 +86,9 @@ namespace Mugnai._aux.utils
         {
             return auctionBll.IsDeleted;
         }
+        public static bool IsUserDisposed(UserBLL user)
+        {
+            return user.IsDeleted;
+        }
     }
 }
