@@ -176,13 +176,19 @@ namespace Mugnai
                 throw new InvalidOperationException();
             using (var context = new AuctionSiteContext(ConnectionString))
             {
-                var sessions = (
-                    from session in context.Sessions
-                    select session
-                );
-                foreach (var session in sessions)
-                    if(!new SessionBLL(session).IsValid())
-                        context.Entry(session).State = EntityState.Deleted;
+                foreach (var iUser in GetUsers())
+                {
+                    var user = iUser as UserBLL;
+                    if (user?.Session != null)
+                        if (!user.Session.IsValid())
+                        {
+                            var dbUser = context.Users.Find(user.UserID);
+                            dbUser.Session = null;
+                            dbUser.SessionId = null;
+                            context.Entry(dbUser).State = EntityState.Modified;
+                            context.Entry(context.Sessions.Find(user.Session.Id)).State = EntityState.Deleted;
+                        }
+                }
                 context.SaveChanges();
             }
         }
@@ -238,7 +244,18 @@ namespace Mugnai
                 }
                 var sessionBLL = new SessionBLL(session, user);
                 if (!sessionBLL.IsValid())
+                {
+                    sessionBLL.Logout();
                     user.Session = Utils.CreateNewSession(this, user);
+                }
+                else
+                {
+                    var validUntil = AlarmClock.Now.AddSeconds(SessionExpirationInSeconds);
+                    session.ValidUntil = validUntil;
+                    user.Session.ValidUntil = validUntil;
+                    context.Entry(session).State = EntityState.Modified;
+                    context.SaveChanges();
+                }
                 return user.Session;
             }
         }
