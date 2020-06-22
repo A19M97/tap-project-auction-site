@@ -12,6 +12,7 @@ namespace Mugnai
         public int UserID { get; }
         public string Username { get; }
         public string Password { get; }
+        public string Salt { get; }
         public SiteBLL Site { get; }
         public SessionBLL Session { get; set; }
         public bool IsDeleted = false;
@@ -22,6 +23,7 @@ namespace Mugnai
             Username = user.Username;
             Password = user.Password;
             Site = site as SiteBLL;
+            Salt = user.Salt;
             if (null != user.Session)
                 Session = new SessionBLL(user.Session, this);
         }

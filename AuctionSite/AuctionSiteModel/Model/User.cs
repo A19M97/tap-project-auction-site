@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using TAP2018_19.AuctionSite.Interfaces;
@@ -16,6 +17,9 @@ namespace Mugnai.Model
         [Required]
         public string Password { get; set; }
 
+        [Required]
+        public string Salt { get; set; }
+
         [MinLength(DomainConstraints.MinSiteName), MaxLength(DomainConstraints.MaxSiteName)]
         public string SiteName { get; set; }
 
@@ -29,6 +33,5 @@ namespace Mugnai.Model
 
         public virtual ICollection<Auction> CreatedAuctions { get; set; }
 
-        public virtual ICollection<Auction> BidAuctions { get; set; }
     }
 }

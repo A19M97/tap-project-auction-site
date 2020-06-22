@@ -2,12 +2,18 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using TAP2018_19.AuctionSite.Interfaces;
 
 namespace Mugnai._aux.utils
 {
     public static class Utils
-    { 
+    {
+
+        public const int SALT_SIZE = 16; // size in bytes
+        public const int HASH_SIZE = 24; // size in bytes
+        public const int ITERATIONS = 1000; // number of pbkdf2 iterations
+
         public static bool SiteNameAlreadyExists(AuctionSiteContext context, string name)
         {
             return context.Sites.Any(site => site.Name == name);
@@ -18,9 +24,28 @@ namespace Mugnai._aux.utils
             return site.IsDeleted;
         }
 
-        internal static bool ArePasswordsEquals(string password1, string password2)
+        internal static bool ArePasswordsEquals(string password1, string password2, byte[] salt)
         {
-            return password1 == password2;
+            return password1 == Convert.ToBase64String(HashPassword(password2, salt));
+        }
+
+        internal static byte[] HashPassword(string password, byte[] salt)
+        {
+            using (Rfc2898DeriveBytes hashGenerator = new Rfc2898DeriveBytes(password, salt))
+            {
+                hashGenerator.IterationCount = ITERATIONS;
+                return hashGenerator.GetBytes(HASH_SIZE);
+            }
+        }
+
+        internal static byte[] GenerateSalt()
+        {
+            byte[] salt = new byte[SALT_SIZE];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(salt);
+            }
+            return salt;
         }
 
         internal static SessionBLL CreateNewSession(SiteBLL site, UserBLL user)
@@ -90,5 +115,6 @@ namespace Mugnai._aux.utils
         {
             return user.IsDeleted;
         }
+
     }
 }

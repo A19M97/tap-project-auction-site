@@ -106,7 +106,7 @@ namespace Mugnai
             if (null == user)
                 return null;
 
-            if (!Utils.ArePasswordsEquals(user.Password, password))
+            if (!Utils.ArePasswordsEquals(user.Password, password, Convert.FromBase64String(user.Salt)))
                 return null;
 
             var userSession = GetUserSession(user);
@@ -152,7 +152,7 @@ namespace Mugnai
                 throw new ArgumentException();
             if (IsUsernameAlreadyUsedInSite(username))
                 throw new NameAlreadyInUseException("Username already used: " + username);
-            AddUser(username, password);
+            AddUser(username, password, Utils.GenerateSalt());
         }
 
         public void Delete()
@@ -206,7 +206,7 @@ namespace Mugnai
             return false;
         }
 
-        private void AddUser(string username, string password)
+        private void AddUser(string username, string password, byte[] salt)
         {
             User user;
             using (var context = new AuctionSiteContext(ConnectionString))
@@ -214,7 +214,8 @@ namespace Mugnai
                 user = new User()
                 {
                     Username = username,
-                    Password = password,
+                    Password = Convert.ToBase64String(Utils.HashPassword(password, salt)),
+                    Salt = Convert.ToBase64String(salt),
                     SiteName = Name
                 };
                 context.Users.Add(user);
