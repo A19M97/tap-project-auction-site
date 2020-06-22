@@ -10,9 +10,9 @@ namespace Mugnai._aux.utils
     public static class Utils
     {
 
-        public const int SALT_SIZE = 16; // size in bytes
-        public const int HASH_SIZE = 24; // size in bytes
-        public const int ITERATIONS = 1000; // number of pbkdf2 iterations
+        private const int SALT_SIZE = 16; // size in bytes
+        private const int HASH_SIZE = 24; // size in bytes
+        private const int ITERATIONS = 1000; // number of pbkdf2 iterations
 
         public static bool SiteNameAlreadyExists(AuctionSiteContext context, string name)
         {

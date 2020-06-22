@@ -114,6 +114,8 @@ namespace Mugnai
             using (var context = new AuctionSiteContext(ConnectionString))
             {
                 var dbUser = context.Users.Find(user.UserID);
+                if(null == dbUser)
+                    throw new InvalidOperationException();
                 dbUser.SessionId = userSession.Id;
                 context.Entry(dbUser).State = EntityState.Modified;
                 context.SaveChanges();
@@ -183,6 +185,8 @@ namespace Mugnai
                         if (!user.Session.IsValid())
                         {
                             var dbUser = context.Users.Find(user.UserID);
+                            if(null == dbUser)
+                                throw new InvalidOperationException();
                             dbUser.Session = null;
                             dbUser.SessionId = null;
                             context.Entry(dbUser).State = EntityState.Modified;

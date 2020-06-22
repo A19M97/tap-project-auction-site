@@ -16,7 +16,7 @@ namespace Mugnai
 
         public bool IsDeleted = false;
 
-        public bool LoggedOut = false;
+        public bool LoggedOut;
         private IAlarmClock AlarmClock { get; }
 
         public SessionBLL(Session session)
@@ -30,7 +30,7 @@ namespace Mugnai
             Id = session.Id;
             ValidUntil = session.ValidUntil;
             User = user;
-            UserBLL userBLL = User as UserBLL;
+            UserBLL userBLL = (UserBLL) User;
             AlarmClock = userBLL.Site.AlarmClock;
         }
 

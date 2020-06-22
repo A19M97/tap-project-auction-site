@@ -1,10 +1,6 @@
 ﻿using Mugnai.Model;
 using System;
-using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Mugnai._aux.utils;
 using TAP2018_19.AuctionSite.Interfaces;
 
@@ -16,7 +12,8 @@ namespace Mugnai
         public IUser Seller { get; }
         public string Description { get; }
         public DateTime EndsOn { get; }
-        public bool IsDeleted = false;
+
+        public bool IsDeleted;
 
 
         public AuctionBLL(Auction auction, IUser seller)
@@ -40,7 +37,7 @@ namespace Mugnai
         {
             if (Utils.IsAuctionDisposed(this))
                 throw new InvalidOperationException();
-            var userBLL = Seller as UserBLL;
+            var userBLL = (UserBLL) Seller;
             using (var context = new AuctionSiteContext(userBLL.Site.ConnectionString))
             {
                 var auction = context.Auctions.Find(Id);
@@ -57,7 +54,7 @@ namespace Mugnai
         {
             if (Utils.IsAuctionDisposed(this))
                 throw new InvalidOperationException();
-            var sellerBLL = Seller as UserBLL;
+            var sellerBLL = (UserBLL) Seller;
             using (var context = new AuctionSiteContext(sellerBLL.Site.ConnectionString))
             {
                 var auction = context.Auctions.Find(Id);
@@ -71,7 +68,7 @@ namespace Mugnai
         {
             if (Utils.IsAuctionDisposed(this))
                 throw new InvalidOperationException();
-            var sellerBLL = Seller as UserBLL;
+            var sellerBLL = (UserBLL) Seller;
             using (var context = new AuctionSiteContext(sellerBLL.Site.ConnectionString))
             {
                 var auction = context.Auctions.Find(Id);
@@ -89,10 +86,10 @@ namespace Mugnai
                 throw new ArgumentNullException();
             if(offer < 0) 
                 throw new ArgumentOutOfRangeException();
-            if(!session.IsValid() || Seller.Equals(session.User) || !(Seller as UserBLL).Site.Equals((session.User as UserBLL).Site)) 
+            if(!session.IsValid() || Seller.Equals(session.User) || !((UserBLL) Seller).Site.Equals(((UserBLL) session.User).Site)) 
                 throw new ArgumentException();
 
-            var sellerBLL = Seller as UserBLL;
+            var sellerBLL = (UserBLL) Seller;
             using (var context = new AuctionSiteContext(sellerBLL.Site.ConnectionString))
             {
                 var auction = context.Auctions.Find(Id);
@@ -134,7 +131,9 @@ namespace Mugnai
                     UpdateAuction(context, auction, session, offer, Math.Min(offer, (double)lastBid + minimumBidIncrement));
                     return true;
                 }
+
                 UpdateAuction(context, auction, null, offer, Math.Min(offer + minimumBidIncrement, (double) lastBid));
+
                 return true;
             }
         }
@@ -143,7 +142,7 @@ namespace Mugnai
         {
             auction.LastBid = offer;
             if(null != session)
-                auction.CurrentWinnerId = (session.User as UserBLL).UserID;
+                auction.CurrentWinnerId = ((UserBLL) session.User).UserID;
             if (null != currentPrice)
                 auction.CurrentPrice = (double) currentPrice;
             context.Entry(auction).State = EntityState.Modified;
@@ -156,6 +155,8 @@ namespace Mugnai
             using (var context = new AuctionSiteContext(sellerBLL.Site.ConnectionString))
             {
                 var auction = context.Auctions.Find(Id);
+                if (null == auction)
+                    throw new InvalidOperationException();
                 auction.CurrentWinner = null;
                 auction.CurrentWinnerId = null;
                 context.Entry(auction).State = EntityState.Modified;

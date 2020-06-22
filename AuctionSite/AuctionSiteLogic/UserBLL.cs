@@ -15,7 +15,8 @@ namespace Mugnai
         public string Salt { get; }
         public SiteBLL Site { get; }
         public SessionBLL Session { get; set; }
-        public bool IsDeleted = false;
+
+        public bool IsDeleted;
 
         public UserBLL(User user, ISite site)
         {
@@ -74,6 +75,7 @@ namespace Mugnai
                 context.Entry(user).State = EntityState.Deleted;
                 context.SaveChanges();
             }
+
             IsDeleted = true;
         }
     }
