@@ -22,7 +22,7 @@ namespace Mugnai
                     context.Database.Delete();
                     context.Database.Create();
                 }
-                catch (SqlException e)
+                catch (Exception e)
                 {
                     throw new UnavailableDbException("Database connection error.", e);
                 }
