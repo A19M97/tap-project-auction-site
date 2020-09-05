@@ -68,7 +68,7 @@ namespace Mugnai
                 else if (Equals(auctionBLL.Seller))
                     auctionBLL.Delete();
             }
-            Session.Logout();
+            Session?.Logout();
             using (var context = new AuctionSiteContext(Site.ConnectionString))
             {
                 var user = context.Users.Find(UserID);
