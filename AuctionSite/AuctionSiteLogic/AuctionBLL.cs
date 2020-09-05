@@ -36,13 +36,13 @@ namespace Mugnai
         public IUser CurrentWinner()
         {
             if (Utils.IsAuctionDisposed(this))
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("Invalid operation: user is disposed.");
             var userBLL = (UserBLL) Seller;
             using (var context = new AuctionSiteContext(userBLL.Site.ConnectionString))
             {
                 var auction = context.Auctions.Find(Id);
                 if (null == auction)
-                    throw new InvalidOperationException();
+                    throw new InvalidOperationException("Invalid operation: auction not found.");
                 var currentWinner = auction.CurrentWinner;
                 if (null == currentWinner)
                     return null;
@@ -53,13 +53,13 @@ namespace Mugnai
         public double CurrentPrice()
         {
             if (Utils.IsAuctionDisposed(this))
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("Invalid operation: user is disposed.");
             var sellerBLL = (UserBLL) Seller;
             using (var context = new AuctionSiteContext(sellerBLL.Site.ConnectionString))
             {
                 var auction = context.Auctions.Find(Id);
                 if(null == auction)
-                    throw new InvalidOperationException();
+                    throw new InvalidOperationException("Invalid operation: auction not found.");
                 return auction.CurrentPrice;
             }
         }
@@ -67,7 +67,7 @@ namespace Mugnai
         public void Delete()
         {
             if (Utils.IsAuctionDisposed(this))
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("Invalid operation: user is disposed.");
             var sellerBLL = (UserBLL) Seller;
             using (var context = new AuctionSiteContext(sellerBLL.Site.ConnectionString))
             {
@@ -81,20 +81,20 @@ namespace Mugnai
         public bool BidOnAuction(ISession session, double offer)
         {
             if (Utils.IsAuctionDisposed(this))
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("Invalid operation: user is disposed.");
             if (null == session) 
-                throw new ArgumentNullException();
+                throw new ArgumentNullException($"{nameof(session)} cannot be null.");
             if(offer < 0) 
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException($"{nameof(offer)} cannot be a negative number.");
             if(!session.IsValid() || Seller.Equals(session.User) || !((UserBLL) Seller).Site.Equals(((UserBLL) session.User).Site)) 
-                throw new ArgumentException();
+                throw new ArgumentException($"{nameof(session)} not valid.");
 
             var sellerBLL = (UserBLL) Seller;
             using (var context = new AuctionSiteContext(sellerBLL.Site.ConnectionString))
             {
                 var auction = context.Auctions.Find(Id);
                 if(null == auction) 
-                    throw new InvalidOperationException();
+                    throw new InvalidOperationException("Invalid operation: auction not found.");
                 var lastBid = auction.LastBid;
                 var currentWinnerId = auction.CurrentWinnerId;
                 var minimumBidIncrement = sellerBLL.Site.MinimumBidIncrement;
@@ -112,7 +112,7 @@ namespace Mugnai
                     return false;
                 var sessionDb = context.Sessions.Find(session.Id);
                 if(null == sessionDb)
-                    throw new InvalidOperationException();
+                    throw new InvalidOperationException("Invalid operation: session not found");
                 sessionDb.ValidUntil = sellerBLL.Site.AlarmClock.Now.AddSeconds(sellerBLL.Site.SessionExpirationInSeconds);
                 context.Entry(sessionDb).State = EntityState.Modified;
                 ((SessionBLL) session).ValidUntil = sellerBLL.Site.AlarmClock.Now.AddSeconds(sellerBLL.Site.SessionExpirationInSeconds);
@@ -156,7 +156,7 @@ namespace Mugnai
             {
                 var auction = context.Auctions.Find(Id);
                 if (null == auction)
-                    throw new InvalidOperationException();
+                    throw new InvalidOperationException("Invalid operation: auction not found.");
                 auction.CurrentWinner = null;
                 auction.CurrentWinnerId = null;
                 context.Entry(auction).State = EntityState.Modified;

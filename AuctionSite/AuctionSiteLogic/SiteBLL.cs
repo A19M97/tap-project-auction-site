@@ -37,7 +37,7 @@ namespace Mugnai
         public IEnumerable<IUser> GetUsers()
         {
             if (Utils.IsSiteDisposed(this))
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("Invalid operation: this site is disposed.");
             using (var context = new AuctionSiteContext(ConnectionString))
             {
                 var users =
@@ -52,7 +52,7 @@ namespace Mugnai
         public IEnumerable<ISession> GetSessions()
         {
             if (Utils.IsSiteDisposed(this))
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("Invalid operation: this site is disposed.");
             var sessions = new List<SessionBLL>();
             foreach (var iUser in GetUsers())
             {
@@ -69,7 +69,7 @@ namespace Mugnai
         public IEnumerable<IAuction> GetAuctions(bool onlyNotEnded)
         {
             if (Utils.IsSiteDisposed(this))
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("Invalid operation: this site is disposed.");
             using (var context = new AuctionSiteContext(ConnectionString))
             {
                 List<Auction> auctions;
@@ -96,11 +96,11 @@ namespace Mugnai
         public ISession Login(string username, string password)
         {
             if (Utils.IsSiteDisposed(this))
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("Invalid operation: this site is disposed.");
             if (null == username || null == password)
-                throw new ArgumentNullException();
+                throw new ArgumentNullException($"{nameof(username)} and {nameof(password)} cannot be null");
             if (!Utils.IsValidUsername(username) || !Utils.IsValidPassword(password))
-                throw new ArgumentException();
+                throw new ArgumentException($"{nameof(username)} and/or {nameof(password)} aren't valid.");
 
             var user = GetUserByUsername(username);
             if (null == user)
@@ -115,7 +115,7 @@ namespace Mugnai
             {
                 var dbUser = context.Users.Find(user.UserID);
                 if(null == dbUser)
-                    throw new InvalidOperationException();
+                    throw new InvalidOperationException("Invalid operation: user not found.");
                 dbUser.SessionId = userSession.Id;
                 context.Entry(dbUser).State = EntityState.Modified;
                 context.SaveChanges();
@@ -127,9 +127,9 @@ namespace Mugnai
         public ISession GetSession(string sessionId)
         {
             if (Utils.IsSiteDisposed(this))
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("Invalid operation: this site is disposed.");
             if (null == sessionId)
-                throw new ArgumentNullException();
+                throw new ArgumentNullException($"{nameof(sessionId)} cannot be null.");
             if ("" == sessionId)
                 return null;
 
@@ -147,20 +147,20 @@ namespace Mugnai
         public void CreateUser(string username, string password)
         {
             if (Utils.IsSiteDisposed(this))
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("Invalid operation: this site is disposed.");
             if (null == username || null == password)
-                throw new ArgumentNullException();
+                throw new ArgumentNullException($"{nameof(username)} and/or {nameof(password)} cannot be null");
             if (!Utils.IsValidUsername(username) || !Utils.IsValidPassword(password))
-                throw new ArgumentException();
+                throw new ArgumentException($"{nameof(username)} and/or {nameof(password)} aren't valid.");
             if (IsUsernameAlreadyUsedInSite(username))
-                throw new NameAlreadyInUseException("Username already used: " + username);
+                throw new NameAlreadyInUseException($"{nameof(username)}: {username} already in use.");
             AddUser(username, password, Utils.GenerateSalt());
         }
 
         public void Delete()
         {
             if (Utils.IsSiteDisposed(this))
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("Invalid operation: this site is disposed.");
             DeleteUsers();
             DeleteAuctions();
             using (var context = new AuctionSiteContext(ConnectionString))
@@ -175,7 +175,7 @@ namespace Mugnai
         public void CleanupSessions()
         {
             if (Utils.IsSiteDisposed(this))
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("Invalid operation: this site is disposed.");
             using (var context = new AuctionSiteContext(ConnectionString))
             {
                 foreach (var iUser in GetUsers())
@@ -186,7 +186,7 @@ namespace Mugnai
                         {
                             var dbUser = context.Users.Find(user.UserID);
                             if(null == dbUser)
-                                throw new InvalidOperationException();
+                                throw new InvalidOperationException("Invalid operation: user not found.");
                             dbUser.Session = null;
                             dbUser.SessionId = null;
                             context.Entry(dbUser).State = EntityState.Modified;
@@ -280,7 +280,7 @@ namespace Mugnai
         public IEnumerable<IAuction> GetEndedAuctions()
         {
             if (Utils.IsSiteDisposed(this))
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("Invalid operation: this site is disposed.");
             using (var context = new AuctionSiteContext(ConnectionString))
             {
                 var auctions = (

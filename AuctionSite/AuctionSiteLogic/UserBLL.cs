@@ -41,7 +41,7 @@ namespace Mugnai
         public IEnumerable<IAuction> WonAuctions()
         {
             if (Utils.IsUserDisposed(this))
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("User disposed.");
             var wonAuctions = new List<IAuction>();
             foreach (var auction in Site.GetEndedAuctions())
             {
@@ -54,11 +54,11 @@ namespace Mugnai
         public void Delete()
         {
             if (Utils.IsUserDisposed(this))
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("User disposed.");
             foreach (var auction in Site.GetAuctions(true))
             {
                 if (Equals(auction.CurrentWinner()) || Equals(auction.Seller))
-                    throw new InvalidOperationException();
+                    throw new InvalidOperationException("User cannot be deleted because is a current winner in an auction.");
             }
             foreach (var auction in Site.GetEndedAuctions())
             {

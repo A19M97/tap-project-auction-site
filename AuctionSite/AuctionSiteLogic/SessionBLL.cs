@@ -62,14 +62,15 @@ namespace Mugnai
 
         public void Logout()
         {
-            if (IsLoggedOut()) throw new InvalidOperationException();
+            if (IsLoggedOut()) 
+                throw new InvalidOperationException("User already logged out.");
 
             var userBLL = User as UserBLL;
             using (var context = new AuctionSiteContext(userBLL.Site.ConnectionString))
             {
                 var session = context.Sessions.Find(Id);
                 if (null == session)
-                    throw new InvalidOperationException();
+                    throw new InvalidOperationException("invalid operation: session not found.");
                 context.Users.Where(u => u.UserID == userBLL.UserID).Load();
                 context.Sessions.Remove(session);
                 context.SaveChanges();
@@ -81,15 +82,15 @@ namespace Mugnai
         public IAuction CreateAuction(string description, DateTime endsOn, double startingPrice)
         {
             if(!IsValid() || Utils.IsSessionDisposed(this))
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("Session not valid or disposed.");
             if(null == description)
-                throw new ArgumentNullException();
+                throw new ArgumentNullException($"{nameof(description)} cannot be null.");
             if(string.Empty == description)
-                throw new ArgumentException();
+                throw new ArgumentException($"{nameof(description)} cannot be an empty string.");
             if(IsStartingPriceNegative(startingPrice))
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException($"{nameof(startingPrice)} cannot be a negative number.");
             if(endsOn < AlarmClock.Now)
-                throw new UnavailableTimeMachineException();
+                throw new UnavailableTimeMachineException($"{endsOn} cannot be in the past.");
             var userBLL = User as UserBLL;
             Auction auction;
             var validUntil = AlarmClock.Now.AddSeconds(userBLL.Site.SessionExpirationInSeconds);
@@ -110,7 +111,7 @@ namespace Mugnai
 
                 var session = context.Sessions.Find(Id);
                 if(null == session)
-                    throw new InvalidOperationException();
+                    throw new InvalidOperationException("Invalid operation: session not found.");
                 session.ValidUntil = validUntil;
                 context.Entry(session).State = EntityState.Modified;
                 context.SaveChanges();
