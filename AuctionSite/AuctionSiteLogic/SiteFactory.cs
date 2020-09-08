@@ -46,8 +46,11 @@ namespace Mugnai
         public void CreateSiteOnDb(string connectionString, string name, int timezone, int sessionExpirationTimeInSeconds,
             double minimumBidIncrement)
         {
-            if (null == connectionString || null == name)
+            if (null == connectionString)
                 throw new ArgumentNullException($"{nameof(connectionString)} cannot be null.");
+
+            if (null == name)
+                throw new ArgumentNullException($"{nameof(name)} cannot be null.");
 
             if (!IsValidSiteName(name))
                 throw new ArgumentException($"{nameof(name)} is not a valid site name.");
@@ -82,8 +85,12 @@ namespace Mugnai
 
         public ISite LoadSite(string connectionString, string name, IAlarmClock alarmClock)
         {
-            if (null == connectionString || null == name || null == alarmClock)
-                throw new ArgumentNullException($"{nameof(connectionString)}, {nameof(name)} and {nameof(alarmClock)} cannot be null.");
+            if (null == connectionString)
+                throw new ArgumentNullException($"{nameof(connectionString)} cannot be null.");
+            if (null == name)
+                throw new ArgumentNullException($"{nameof(name)} cannot be null.");
+            if (null == alarmClock)
+                throw new ArgumentNullException($"{nameof(alarmClock)} cannot be null.");
             if (!IsValidSiteName(name))
                 throw new ArgumentException($"{nameof(name)} is not a valid site name.");
             using (var context = new AuctionSiteContext(connectionString))
@@ -106,8 +113,10 @@ namespace Mugnai
 
         public int GetTheTimezoneOf(string connectionString, string name)
         {
-            if (null == connectionString || null == name)
-                throw new ArgumentNullException($"{nameof(connectionString)} and {nameof(name)} cannot be null.");
+            if (null == connectionString)
+                throw new ArgumentNullException($"{nameof(connectionString)} cannot be null.");
+            if (null == name)
+                throw new ArgumentNullException($"{nameof(name)} cannot be null.");
             if (!IsValidSiteName(name))
                 throw new ArgumentException($"{nameof(name)} is not a valid site name.");
             using (var context = new AuctionSiteContext(connectionString))

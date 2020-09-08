@@ -97,10 +97,14 @@ namespace Mugnai
         {
             if (Utils.IsSiteDisposed(this))
                 throw new InvalidOperationException("Invalid operation: this site is disposed.");
-            if (null == username || null == password)
-                throw new ArgumentNullException($"{nameof(username)} and {nameof(password)} cannot be null");
-            if (!Utils.IsValidUsername(username) || !Utils.IsValidPassword(password))
-                throw new ArgumentException($"{nameof(username)} and/or {nameof(password)} aren't valid.");
+            if (null == username)
+                throw new ArgumentNullException($"{nameof(username)} cannot be null");
+            if (null == password)
+                throw new ArgumentNullException($"{nameof(password)} cannot be null");
+            if (!Utils.IsValidUsername(username))
+                throw new ArgumentException($"{nameof(username)} is not valid.");
+            if (!Utils.IsValidPassword(password))
+                throw new ArgumentException($"{nameof(password)} is not valid.");
 
             var user = GetUserByUsername(username);
             if (null == user)
@@ -148,10 +152,14 @@ namespace Mugnai
         {
             if (Utils.IsSiteDisposed(this))
                 throw new InvalidOperationException("Invalid operation: this site is disposed.");
-            if (null == username || null == password)
-                throw new ArgumentNullException($"{nameof(username)} and/or {nameof(password)} cannot be null");
-            if (!Utils.IsValidUsername(username) || !Utils.IsValidPassword(password))
-                throw new ArgumentException($"{nameof(username)} and/or {nameof(password)} aren't valid.");
+            if (null == username)
+                throw new ArgumentNullException($"{nameof(username)} cannot be null");
+            if (null == password)
+                throw new ArgumentNullException($"{nameof(password)} cannot be null");
+            if (!Utils.IsValidUsername(username))
+                throw new ArgumentException($"{nameof(username)} is not valid.");
+            if (!Utils.IsValidPassword(password))
+                throw new ArgumentException($" {nameof(password)} is not valid.");
             if (IsUsernameAlreadyUsedInSite(username))
                 throw new NameAlreadyInUseException($"{nameof(username)}: {username} already in use.");
             AddUser(username, password, Utils.GenerateSalt());

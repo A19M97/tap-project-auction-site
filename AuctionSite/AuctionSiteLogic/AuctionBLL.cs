@@ -86,8 +86,12 @@ namespace Mugnai
                 throw new ArgumentNullException($"{nameof(session)} cannot be null.");
             if(offer < 0) 
                 throw new ArgumentOutOfRangeException($"{nameof(offer)} cannot be a negative number.");
-            if(!session.IsValid() || Seller.Equals(session.User) || !((UserBLL) Seller).Site.Equals(((UserBLL) session.User).Site)) 
+            if(!session.IsValid()) 
                 throw new ArgumentException($"{nameof(session)} not valid.");
+            if (Seller.Equals(session.User))
+                throw new ArgumentException("Bidder and seller cannot be the same user.");
+            if (!((UserBLL)Seller).Site.Equals(((UserBLL)session.User).Site))
+                throw new ArgumentException($"Seller site must be the same of bidder site.");
 
             var sellerBLL = (UserBLL) Seller;
             using (var context = new AuctionSiteContext(sellerBLL.Site.ConnectionString))

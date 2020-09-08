@@ -81,9 +81,11 @@ namespace Mugnai
 
         public IAuction CreateAuction(string description, DateTime endsOn, double startingPrice)
         {
-            if(!IsValid() || Utils.IsSessionDisposed(this))
-                throw new InvalidOperationException("Session not valid or disposed.");
-            if(null == description)
+            if(!IsValid())
+                throw new InvalidOperationException("Session not valid.");
+            if (Utils.IsSessionDisposed(this))
+                throw new InvalidOperationException("Session disposed.");
+            if (null == description)
                 throw new ArgumentNullException($"{nameof(description)} cannot be null.");
             if(string.Empty == description)
                 throw new ArgumentException($"{nameof(description)} cannot be an empty string.");

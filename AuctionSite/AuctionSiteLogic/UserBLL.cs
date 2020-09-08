@@ -57,8 +57,10 @@ namespace Mugnai
                 throw new InvalidOperationException("User disposed.");
             foreach (var auction in Site.GetAuctions(true))
             {
-                if (Equals(auction.CurrentWinner()) || Equals(auction.Seller))
+                if (Equals(auction.CurrentWinner()))
                     throw new InvalidOperationException("User cannot be deleted because is a current winner in an auction.");
+                if (Equals(auction.Seller))
+                    throw new InvalidOperationException("User cannot be deleted because is a seller.");
             }
             foreach (var auction in Site.GetEndedAuctions())
             {
