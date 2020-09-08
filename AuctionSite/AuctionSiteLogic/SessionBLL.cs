@@ -89,7 +89,7 @@ namespace Mugnai
                 throw new ArgumentNullException($"{nameof(description)} cannot be null.");
             if(string.Empty == description)
                 throw new ArgumentException($"{nameof(description)} cannot be an empty string.");
-            if(IsStartingPriceNegative(startingPrice))
+            if(IsStartingPriceNegative())
                 throw new ArgumentOutOfRangeException($"{nameof(startingPrice)} cannot be a negative number.");
             if(endsOn < AlarmClock.Now)
                 throw new UnavailableTimeMachineException($"{endsOn} cannot be in the past.");
@@ -120,14 +120,15 @@ namespace Mugnai
             }
             ValidUntil = validUntil;
             return new AuctionBLL(auction, User);
+
+            bool IsStartingPriceNegative()
+            {
+                return startingPrice < 0;
+            }
         }
 
         /*AUX METHODS*/
-        private bool IsStartingPriceNegative(double startingPrice)
-        {
-            return startingPrice < 0;
-        }
-
+        
         private bool IsLoggedOut()
         {
             return LoggedOut;

@@ -55,13 +55,13 @@ namespace Mugnai
             if (!IsValidSiteName(name))
                 throw new ArgumentException($"{nameof(name)} is not a valid site name.");
 
-            if (!IsValidTimezone(timezone))
+            if (!IsValidTimezone())
                 throw new ArgumentOutOfRangeException($"{nameof(timezone)} is not a valid timezone.");
 
-            if (!IsPositiveSessionExpiration(sessionExpirationTimeInSeconds))
+            if (!IsPositiveSessionExpiration())
                 throw new ArgumentOutOfRangeException($"{nameof(sessionExpirationTimeInSeconds)} must be a positive number.");
 
-            if (!IsPositiveMinimumBidIncrement(minimumBidIncrement))
+            if (!IsPositiveMinimumBidIncrement())
                 throw new ArgumentOutOfRangeException($"{nameof(minimumBidIncrement)} must be a positive number.");
 
             using (var context = new AuctionSiteContext(connectionString))
@@ -81,6 +81,19 @@ namespace Mugnai
                 context.Sites.Add(site);
                 context.SaveChanges();
             }
+
+            bool IsPositiveMinimumBidIncrement()
+            {
+                return minimumBidIncrement > 0;
+            }
+            bool IsPositiveSessionExpiration()
+            {
+                return sessionExpirationTimeInSeconds > 0;
+            }
+            bool IsValidTimezone()
+            {
+                return timezone >= DomainConstraints.MinTimeZone && timezone <= DomainConstraints.MaxTimeZone;
+            }
         }
 
         public ISite LoadSite(string connectionString, string name, IAlarmClock alarmClock)
@@ -99,7 +112,7 @@ namespace Mugnai
                 if (!ExistsDb(context))
                     throw new UnavailableDbException("Database connection error");
                 var site =
-                    (from siteDb in context.Sites//.Include("Users").Include("Users.Session").Include("Users.Site")
+                    (from siteDb in context.Sites
                         where siteDb.Name == name
                         select siteDb).FirstOrDefault();
 
@@ -139,21 +152,6 @@ namespace Mugnai
         private static bool ExistsDb(AuctionSiteContext context)
         {
             return context.Database.Exists();
-        }
-
-        private static bool IsPositiveMinimumBidIncrement(double minimumBidIncrement)
-        {
-            return minimumBidIncrement > 0;
-        }
-
-        private static bool IsPositiveSessionExpiration(int sessionExpirationTimeInSeconds)
-        {
-            return sessionExpirationTimeInSeconds > 0;
-        }
-
-        private static bool IsValidTimezone(int timezone)
-        {
-            return timezone >= DomainConstraints.MinTimeZone && timezone <= DomainConstraints.MaxTimeZone;
         }
 
         private static bool IsValidSiteName(string name)

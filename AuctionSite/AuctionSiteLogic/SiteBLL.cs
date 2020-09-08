@@ -160,9 +160,21 @@ namespace Mugnai
                 throw new ArgumentException($"{nameof(username)} is not valid.");
             if (!Utils.IsValidPassword(password))
                 throw new ArgumentException($" {nameof(password)} is not valid.");
-            if (IsUsernameAlreadyUsedInSite(username))
+            if (IsUsernameAlreadyUsedInSite())
                 throw new NameAlreadyInUseException($"{nameof(username)}: {username} already in use.");
             AddUser(username, password, Utils.GenerateSalt());
+
+
+            bool IsUsernameAlreadyUsedInSite()
+            {
+                var users = GetUsers();
+                if (null == users)
+                    return false;
+                foreach (var user in users)
+                    if (user.Username == username)
+                        return true;
+                return false;
+            }
         }
 
         public void Delete()
@@ -207,17 +219,7 @@ namespace Mugnai
 
 
         /* AUX METHODS */
-        private bool IsUsernameAlreadyUsedInSite(string username)
-        {
-            var users = GetUsers();
-            if (null == users)
-                return false;
-            foreach (var user in users)
-                if (user.Username == username)
-                    return true;
-            return false;
-        }
-
+        
         private void AddUser(string username, string password, byte[] salt)
         {
             User user;
