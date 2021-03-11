@@ -1,2 +1,2 @@
-# TAP2018_19Kickoff
-Interfaces and tests for TAP 2018/19 project
+This is a .NET framework project used for Tecniche Avanzate di Programmazione exam.
+Auction Site Library classes with tests.
